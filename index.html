@@ -81,8 +81,20 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 .shot::before{content:"";position:absolute;inset:8% 6% -6%;background:radial-gradient(closest-side,#8b5cf699,transparent);filter:blur(40px);z-index:-1}
 .shot img{border-radius:18px;border:1px solid var(--line2);box-shadow:0 40px 100px -30px #000}
 
+/* relief 3D au survol */
+[data-tilt]{transform:perspective(var(--pp,1400px)) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(var(--tz,0px));position:relative}
+.tilt{--pp:1700px}.feat{--pp:900px}
+.tilt{border-radius:18px}
+.tilt::before{content:"";position:absolute;inset:0;border-radius:18px;box-shadow:0 28px 90px -30px #000c;pointer-events:none}
+.tilt .app{box-shadow:0 0 0 1px #ffffff10}
+.glare{position:absolute;inset:0;border-radius:18px;pointer-events:none;z-index:3;opacity:var(--g,0);
+  background:radial-gradient(560px circle at var(--gx,50%) var(--gy,50%),#ffffff2e,#ffffff0a 40%,transparent 65%)}
+[data-tilt].moving{will-change:transform}
+[data-tilt].rest{transform:none}
+[data-tilt]:not(.lit)>.glare{display:none}
+.feat .glare,.step .glare,.hud .glare{border-radius:var(--r)}
 /* fenêtre interactive : 1200 x 815 px, mise à l'échelle */
-.app{position:relative;width:100%;aspect-ratio:1200/815;border-radius:18px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 40px 100px -30px #000;text-align:left;
+.app{position:relative;width:100%;aspect-ratio:1200/815;border-radius:18px;overflow:hidden;border:1px solid var(--line2);text-align:left;
   user-select:none;-webkit-user-select:none}
 .app-in{position:absolute;left:0;top:0;width:1200px;height:815px;transform-origin:0 0;transform:scale(var(--s,1));will-change:transform;font-size:14px;line-height:1.4}
 .app-bg{position:absolute;inset:0;width:1200px;height:815px;max-width:none}
@@ -155,8 +167,8 @@ h2{font-size:clamp(32px,4.6vw,52px);line-height:1.08;letter-spacing:-.03em;font-
 
 /* fonctionnalités */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.feat{padding:28px;transition:transform .25s,border-color .25s}
-.feat:hover{transform:translateY(-4px);border-color:var(--line2)}
+.feat{padding:28px;transition:border-color .25s}
+.feat:hover{border-color:var(--line2)}
 .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#8b5cf62e;border:1px solid #b892ff44;color:var(--acc2);margin-bottom:18px}
 .ico svg{width:22px;height:22px}
 .feat h3{font-size:19px;margin-bottom:6px}
@@ -264,8 +276,8 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
 .foot nav{display:flex;gap:20px;flex-wrap:wrap}
 
 /* apparition au défilement */
-.rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
-.rv.in{opacity:1;transform:none}
+.rv{opacity:0;translate:0 24px;transition:opacity .7s,translate .7s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;translate:none}
 
 /* ---------- responsive */
 @media (max-width:980px){
@@ -283,7 +295,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   section{padding-top:80px}
   .hero{padding-top:56px}
 }
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;translate:none}}
 </style>
 </head>
 <body>
@@ -337,6 +349,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <span><svg><use href="#i-win"/></svg>Windows 10 &amp; 11</span>
     </div>
     <div class="shot rv">
+      <div class="tilt" id="appTilt" data-tilt="7"><div class="glare"></div>
       <div class="app" id="app" aria-label="Interactive Phantom Boost window">
         <div class="app-in" id="appIn">
           <img class="app-bg" id="appBg" src="assets/img/app/display-base.webp" width="1200" height="815" alt="Phantom Boost window" draggable="false">
@@ -367,6 +380,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
           <button class="a-hot" data-go="account" style="left:987px;top:14px;width:97px;height:36px" aria-label="Profile"></button>
           <button class="a-hot" data-go="display" style="left:12px;top:700px;width:215px;height:100px" aria-label="Open display tuning"></button>
         </div>
+      </div>
       </div>
       <p class="app-hint"><svg><use href="#i-spark"/></svg>This is the real interface. Click the menu, move the sliders, pick a preset.</p>
     </div>
@@ -411,12 +425,12 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <p class="sub">No more five tools running at the same time. Phantom Boost does it all from one clean window.</p>
     </div>
     <div class="grid">
-      <article class="card feat rv"><div class="ico"><svg><use href="#i-color"/></svg></div><h3>Display Tuning</h3><p>Saturation, vibrance, hue, gamma and RGB, with presets, a tone curve and a live before / after.</p></article>
-      <article class="card feat rv"><div class="ico"><svg><use href="#i-stretch"/></svg></div><h3>Stretched Resolution</h3><p>1440×1080, 1280×960 and more. Auto stretch turns on with your game and goes back when you alt-tab.</p></article>
-      <article class="card feat rv"><div class="ico"><svg><use href="#i-cross"/></svg></div><h3>Crosshair &amp; Reticle</h3><p>10 designs, any color, size, gap and outline. Share yours with a short code.</p></article>
-      <article class="card feat rv"><div class="ico"><svg><use href="#i-hud"/></svg></div><h3>Smooth HUDs</h3><p>CPU, GPU, RAM, ping, FPS graph, keystrokes and Apple Music with synced lyrics. Drag and resize them.</p></article>
-      <article class="card feat rv"><div class="ico"><svg><use href="#i-bolt"/></svg></div><h3>One-click Optimizer</h3><p>Windows tweaks for games, with a full backup and one-click undo.</p></article>
-      <article class="card feat rv"><div class="ico"><svg><use href="#i-spark"/></svg></div><h3>Made to feel good</h3><p>Smooth animations, backgrounds, hotkeys, Discord status, several screens and auto-updates.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-color"/></svg></div><h3>Display Tuning</h3><p>Saturation, vibrance, hue, gamma and RGB, with presets, a tone curve and a live before / after.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-stretch"/></svg></div><h3>Stretched Resolution</h3><p>1440×1080, 1280×960 and more. Auto stretch turns on with your game and goes back when you alt-tab.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-cross"/></svg></div><h3>Crosshair &amp; Reticle</h3><p>10 designs, any color, size, gap and outline. Share yours with a short code.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-hud"/></svg></div><h3>Smooth HUDs</h3><p>CPU, GPU, RAM, ping, FPS graph, keystrokes and Apple Music with synced lyrics. Drag and resize them.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-bolt"/></svg></div><h3>One-click Optimizer</h3><p>Windows tweaks for games, with a full backup and one-click undo.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-spark"/></svg></div><h3>Made to feel good</h3><p>Smooth animations, backgrounds, hotkeys, Discord status, several screens and auto-updates.</p></article>
     </div>
   </div></section>
 
@@ -818,6 +832,41 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     // précharge les autres pages quand le navigateur est libre
     buildRows();
     setTimeout(() => NAV.forEach(([pg]) => { if (pg !== "display") new Image().src = `assets/img/app/${pg}.webp`; }), 1500);
+  })();
+
+  // ================= relief 3D au survol (lissé à chaque image, 60 i/s)
+  (function tilt() {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    $$("[data-tilt]").forEach(el => {
+      const max = +el.dataset.tilt, cur = { rx: 0, ry: 0, g: 0, gx: 50, gy: 50, tz: 0 }, tgt = Object.assign({}, cur);
+      let raf = 0, held = false, inside = false;
+      const loop = () => {
+        let moving = false;
+        for (const k in cur) { const d = tgt[k] - cur[k]; if (Math.abs(d) > .01) { cur[k] += d * .14; moving = true; } else cur[k] = tgt[k]; }
+        el.style.setProperty("--rx", cur.rx.toFixed(3) + "deg"); el.style.setProperty("--ry", cur.ry.toFixed(3) + "deg");
+        el.style.setProperty("--tz", cur.tz.toFixed(2) + "px"); el.style.setProperty("--g", cur.g.toFixed(3));
+        el.style.setProperty("--gx", cur.gx.toFixed(2) + "%"); el.style.setProperty("--gy", cur.gy.toFixed(2) + "%");
+        raf = moving ? requestAnimationFrame(loop) : 0;
+        el.classList.toggle("moving", moving);  // calque GPU seulement pendant le mouvement : net au repos
+        el.classList.toggle("rest", !moving && !cur.rx && !cur.ry && !cur.tz);
+        el.classList.toggle("lit", cur.g > .002);
+      };
+      const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+      el.classList.add("rest");
+      const ref = el.parentElement;
+      el.addEventListener("pointermove", e => {
+        if (e.pointerType === "touch") return;
+        inside = true;
+        if (held) return;  // pendant un glisser : rien à recalculer, la fenêtre reste à plat
+        const b = ref.getBoundingClientRect(), x = (e.clientX - b.left) / b.width, y = (e.clientY - b.top) / b.height;
+        const k = held ? 0 : 1;  // pendant un clic maintenu, la fenêtre se remet à plat pour viser juste
+        tgt.ry = (x - .5) * 2 * max * k; tgt.rx = -(y - .5) * 2 * max * k; tgt.tz = held ? 0 : max * 1.4;
+        if (!held) { tgt.gx = x * 100; tgt.gy = y * 100; } tgt.g = held ? 0 : Math.min(1, max * .14); kick();
+      });
+      el.addEventListener("pointerdown", () => { held = true; tgt.rx = tgt.ry = tgt.tz = 0; tgt.g = 0; kick(); });
+      addEventListener("pointerup", () => { if (held) { held = false; if (!inside) { tgt.g = 0; } kick(); } });
+      el.addEventListener("pointerleave", () => { inside = false; if (held) return; tgt.rx = tgt.ry = tgt.tz = tgt.g = 0; kick(); });
+    });
   })();
 
   // apparition au défilement
