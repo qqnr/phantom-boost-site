@@ -84,8 +84,12 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 /* fenêtre interactive : 1200 x 815 px, mise à l'échelle */
 .app{position:relative;width:100%;aspect-ratio:1200/815;border-radius:18px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 40px 100px -30px #000;text-align:left;
   user-select:none;-webkit-user-select:none}
-.app-in{position:absolute;left:0;top:0;width:1200px;height:815px;transform-origin:0 0;transform:scale(var(--s,1));font-size:14px;line-height:1.4}
-.app-bg{position:absolute;inset:0;width:1200px;height:815px;max-width:none;transition:opacity .18s}
+.app-in{position:absolute;left:0;top:0;width:1200px;height:815px;transform-origin:0 0;transform:scale(var(--s,1));will-change:transform;font-size:14px;line-height:1.4}
+.app-bg{position:absolute;inset:0;width:1200px;height:815px;max-width:none}
+.app-bg.fade{opacity:0;transition:opacity .2s ease;pointer-events:none}
+.app-bg.fade.show{opacity:1}
+#pgDisplay{transition:opacity .2s ease}
+#pgDisplay.out{opacity:0}
 .app-in>*,.app-in #pgDisplay>*{position:absolute}
 .app-hint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;color:var(--mute);font-size:14px}
 .app-hint svg{width:16px;height:16px;color:var(--acc2)}
@@ -336,6 +340,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <div class="app" id="app" aria-label="Interactive Phantom Boost window">
         <div class="app-in" id="appIn">
           <img class="app-bg" id="appBg" src="assets/img/app/display-base.webp" width="1200" height="815" alt="Phantom Boost window" draggable="false">
+          <img class="app-bg fade" id="appBg2" alt="" width="1200" height="815" draggable="false">
           <div id="pgDisplay">
             <span class="a-pill" id="aBadge" style="left:283px;top:148px">ON</span>
             <span class="a-sub" id="aSub" style="left:345px;top:148px">Vivid Pop on Display 1</span>
@@ -621,14 +626,16 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       for (let i = 0; i < 4096; i++) L[i] = Math.round(255 * Math.pow(i / 4095, 1 / gamma));
       return lutCache[gamma] = L;
     }
-    function grade(src, dst, p) {
-      const [A, o] = matrix(p), L = lut(p.gamma), d = src.data, out = dst.data;
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
-        for (let j = 0; j < 3; j++) {
-          let v = A[j][0] * r + A[j][1] * g + A[j][2] * b + o[j];
-          out[i + j] = L[Math.round((v < 0 ? 0 : v > 1 ? 1 : v) * 4095)];
-        }
+    function grade(src, dst, p) {  // boucle déroulée : reste à 60 i/s même en très haute résolution
+      const [A, o] = matrix(p), L = lut(p.gamma), d = src.data, out = dst.data, K = 4095 / 255;
+      const a00 = A[0][0] * K, a01 = A[0][1] * K, a02 = A[0][2] * K, a10 = A[1][0] * K, a11 = A[1][1] * K, a12 = A[1][2] * K,
+            a20 = A[2][0] * K, a21 = A[2][1] * K, a22 = A[2][2] * K, o0 = o[0] * 4095 + .5, o1 = o[1] * 4095 + .5, o2 = o[2] * 4095 + .5;
+      for (let i = 0, n = d.length; i < n; i += 4) {
+        const r = d[i], g = d[i + 1], bl = d[i + 2];
+        let x = a00 * r + a01 * g + a02 * bl + o0, y = a10 * r + a11 * g + a12 * bl + o1, z = a20 * r + a21 * g + a22 * bl + o2;
+        out[i] = L[x < 0 ? 0 : x > 4095 ? 4095 : x | 0];
+        out[i + 1] = L[y < 0 ? 0 : y > 4095 ? 4095 : y | 0];
+        out[i + 2] = L[z < 0 ? 0 : z > 4095 ? 4095 : z | 0];
         out[i + 3] = 255;
       }
     }
@@ -645,13 +652,13 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     img.src = "assets/img/rob_run.jpg";
     let srcData = null, aftCtx = null, aftData = null;
     img.decode().then(() => {
-      const dpr = Math.min(2, Math.max(1, (window.devicePixelRatio || 1) * (app.clientWidth / 1200)));
+      const dpr = Math.min(3, Math.max(1.5, (window.devicePixelRatio || 1) * (app.clientWidth / 1200)));
       const bctx = cover(img, $("#pvBefore"), 498, 275, dpr);
       srcData = bctx.getImageData(0, 0, $("#pvBefore").width, $("#pvBefore").height);
       aftCtx = cover(img, $("#pvAfter"), 498, 275, dpr);
       aftData = aftCtx.createImageData(srcData.width, srcData.height);
       $$("#aCards canvas").forEach((cv, i) => {
-        const c = cover(img, cv, 109, 62, 2), d = c.getImageData(0, 0, cv.width, cv.height), o = c.createImageData(cv.width, cv.height);
+        const c = cover(img, cv, 109, 62, 3), d = c.getImageData(0, 0, cv.width, cv.height), o = c.createImageData(cv.width, cv.height);
         grade(d, o, PRESETS[i][1]); c.putImageData(o, 0, 0);
       });
       render();
@@ -750,7 +757,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
 
     // courbe de tons (Curve)
     function drawCurve() {
-      const cv = $("#pvCurve"), dpr = 2; cv.width = 498 * dpr; cv.height = 275 * dpr;
+      const cv = $("#pvCurve"), dpr = 3; cv.width = 498 * dpr; cv.height = 275 * dpr;
       const c = cv.getContext("2d"); c.scale(dpr, dpr);
       c.fillStyle = "#120d2a"; c.fillRect(0, 0, 498, 275);
       const x0 = 24, y0 = 16, w = 300, h = 243;
@@ -781,12 +788,25 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     // menu de gauche : chaque page de l'appli
     const NAV = [["display", 109], ["stretch", 146], ["presets", 183], ["auto-tune", 220], ["crosshair", 257], ["reticle", 294], ["binds", 331],
                  ["optimizer", 368], ["theme", 405], ["community", 442], ["account", 518], ["settings", 555], ["about", 592], ["legal", 629]];
-    const go = page => {
-      const bg = $("#appBg"), src = `assets/img/app/${page === "display" ? "display-base" : page}.webp`;
-      if (bg.getAttribute("src") === src) return;
-      bg.style.opacity = .55;
+    let cur = "display", tok = 0;
+    const go = page => {  // fondu enchaîné d'une page à l'autre
+      if (page === cur) return;
+      const t = ++tok, src = `assets/img/app/${page === "display" ? "display-base" : page}.webp`, bg = $("#appBg"), top = $("#appBg2");
+      menu.hidden = true;
       const pre = new Image(); pre.src = src;
-      pre.decode().catch(() => {}).then(() => { bg.src = src; bg.style.opacity = 1; $("#pgDisplay").hidden = page !== "display"; menu.hidden = true; });
+      pre.decode().catch(() => {}).then(() => {
+        if (t !== tok) return;
+        cur = page;
+        top.src = src; top.classList.add("show");
+        const pd = $("#pgDisplay");
+        if (page === "display") { pd.hidden = false; pd.classList.add("out"); requestAnimationFrame(() => pd.classList.remove("out")); }
+        else pd.classList.add("out");
+        setTimeout(() => {
+          if (t !== tok) return;
+          bg.src = src; pd.hidden = page !== "display";
+          requestAnimationFrame(() => top.classList.remove("show"));
+        }, 210);
+      });
     };
     NAV.forEach(([page, y]) => {
       const b = document.createElement("button");
