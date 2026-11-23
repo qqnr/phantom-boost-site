@@ -151,8 +151,8 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 .a-card span{font-size:14px;text-align:center;color:#f5f2ff}
 .a-hot{z-index:2;border-radius:12px}
 .a-hot:hover{background:#ffffff0c}
-.a-nav{left:12px;width:215px;height:35px;border-radius:14px;z-index:2}
-.a-nav:hover{background:#ffffff0c}
+.a-nav{left:12px;width:215px;height:30px;border-radius:14px;z-index:2;border:1px solid transparent;transition:background .15s,border-color .15s}
+.a-nav:hover{background:#ffffff0a;border-color:#c8b4ff3c}
 
 
 
@@ -282,6 +282,13 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
 .rv.in{opacity:1;translate:none}
 
 /* ---------- responsive */
+/* sécurité */
+.safe{margin-top:16px;padding:26px 30px;display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center}
+.vt{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;border:6px solid #3ddc84;box-shadow:0 0 40px -6px #3ddc8466;text-align:center;line-height:1}
+.vt b{font-size:34px;color:#3ddc84;display:block}.vt span{font-size:13px;color:var(--mute)}
+.safe h3{margin:0 0 6px;font-size:21px;display:flex;align-items:center;gap:8px}.safe h3 svg{width:20px;height:20px;color:#3ddc84}
+.safe p{margin:0;color:var(--soft)}.safe code{font-size:12px;color:var(--mute);word-break:break-all;display:block;margin-top:8px}
+@media (max-width:820px){.safe{grid-template-columns:1fr;justify-items:start}}
 /* nouveautés */
 .seasons{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
 .season{padding:16px 16px 24px}
@@ -365,6 +372,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <span><svg><use href="#i-gift"/></svg>Free, no account</span>
       <span><svg><use href="#i-sync"/></svg>Updates install by themselves</span>
       <span><svg><use href="#i-win"/></svg>Windows 10 &amp; 11</span>
+      <span><svg><use href="#i-shield"/></svg><a href="#install" style="color:inherit">0/68 on VirusTotal</a></span>
     </div>
     <div class="shot rv">
       <div class="tilt" id="appTilt" data-tilt="7"><div class="glare"></div>
@@ -586,12 +594,20 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <div class="card step rv"><h3>Play</h3><p>Pick a preset, set your crosshair, launch your game. Updates come by themselves.</p></div>
     </div>
     <div class="card warn rv"><svg><use href="#i-shield"/></svg><div>If Windows shows <b>"Windows protected your PC"</b>, click <b>More info</b>, then <b>Run anyway</b>. This shows up because the installer isn't code-signed yet, which is common for free apps.</div></div>
+    <div class="card safe rv">
+      <div class="vt" aria-label="0 detections out of 68"><div><b>0</b><span>/ 68</span></div></div>
+      <div><h3><svg><use href="#i-check"/></svg>No virus. Checked by 68 antivirus engines.</h3>
+        <p>We uploaded the Phantom Boost installer to VirusTotal: none of the 68 security vendors flagged it. Open the report and check it yourself.</p>
+        <code title="SHA-256 3fcce06cf0f1712f40432c9491420341ba51d6c54221dfd7ad2a78e2b843be8e">PhantomBoost-Setup.exe (v1.0.8) · SHA-256 3fcce06cf0f1…2b843be8e</code></div>
+      <a class="btn btn-ghost" href="https://www.virustotal.com/gui/file/3fcce06cf0f1712f40432c9491420341ba51d6c54221dfd7ad2a78e2b843be8e" target="_blank" rel="noopener">See the report</a>
+    </div>
   </div></section>
 
   <!-- ======================== FAQ -->
   <section id="faq"><div class="wrap">
     <div class="head center rv"><div class="eyebrow">FAQ</div><h2>Questions? Answers.</h2></div>
     <div class="faq">
+      <details class="card rv"><summary>Is there a virus in it?</summary><p>No. The installer was checked on VirusTotal by 68 antivirus engines and none of them flagged it. <a href="https://www.virustotal.com/gui/file/3fcce06cf0f1712f40432c9491420341ba51d6c54221dfd7ad2a78e2b843be8e" target="_blank" rel="noopener">See the report</a>. Phantom Boost only installs in your user folder and doesn't need admin rights.</p></details>
       <details class="card rv"><summary>Is it really free?</summary><p>Yes. Phantom Boost is free, with no trial, no account and no paid version.</p></details>
       <details class="card rv"><summary>Does it touch my game files?</summary><p>No. Phantom Boost doesn't modify or inject anything into your games. Colors use Windows display settings, the crosshair and HUDs are separate windows on top of the game, and stretch uses the normal Windows resolution change. Check the rules of the games you play if you're unsure about overlays.</p></details>
       <details class="card rv"><summary>How do updates work?</summary><p>Phantom Boost checks for a new version when it starts and every few hours. It downloads it in the background, checks the file, and installs it the next time it starts, in a few seconds. Your settings stay as they are. You can turn this off in Settings.</p></details>
@@ -844,8 +860,9 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     }
 
     // menu de gauche : chaque page de l'appli
-    const NAV = [["display", 109], ["stretch", 146], ["presets", 183], ["auto-tune", 220], ["crosshair", 257], ["reticle", 294], ["binds", 331],
-                 ["optimizer", 368], ["theme", 405], ["community", 442], ["account", 518], ["settings", 555], ["about", 592], ["legal", 629]];
+    // positions mesurées sur les captures : une ligne toutes les 32 px, 30 px de haut (comme la sélection dans l'appli)
+    const NAV = [["display", 109], ["stretch", 141], ["presets", 173], ["auto-tune", 205], ["crosshair", 237], ["reticle", 269], ["binds", 301],
+                 ["optimizer", 333], ["theme", 365], ["community", 397], ["account", 468], ["settings", 500], ["about", 532], ["legal", 564]];
     let cur = "display", tok = 0;
     const go = page => {  // fondu enchaîné d'une page à l'autre
       if (page === cur) return;
