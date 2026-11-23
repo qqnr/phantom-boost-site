@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phantom Boost: free display tuning, stretch, crosshair and HUDs for Windows</title>
+<meta name="description" content="Phantom Boost is a free Windows app for gamers: display tuning, stretched resolution, crosshair overlay, HUDs and a one-click optimizer. Updates install by themselves.">
+<meta name="theme-color" content="#0b0718">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Phantom Boost: free display tuning for Windows gamers">
+<meta property="og:description" content="Better colors, stretched resolution, crosshair and HUDs in one clean app. 100% free.">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+@font-face{font-family:Poppins;src:url(assets/fonts/Poppins-Regular.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:Poppins;src:url(assets/fonts/Poppins-Medium.ttf) format("truetype");font-weight:500;font-display:swap}
+@font-face{font-family:Poppins;src:url(assets/fonts/Poppins-Bold.ttf) format("truetype");font-weight:700;font-display:swap}
+
+:root{
+  --bg:#0b0718;--bg2:#120c28;--card:rgba(40,30,86,.42);--card2:rgba(22,16,50,.6);
+  --line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);
+  --text:#f5f2ff;--soft:#d6cff0;--mute:#a69fc8;--acc:#8b5cf6;--acc2:#b892ff;--acc3:#d9c4ff;
+  --ok:#3ddc84;--r:22px;--max:1160px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:var(--bg);color:var(--text);font:400 16px/1.6 Poppins,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--acc2);outline-offset:3px;border-radius:8px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+
+/* ---------- ambiance */
+.sky{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sky::before,.sky::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+.sky::before{width:760px;height:760px;left:-220px;top:-260px;background:radial-gradient(circle,#6d28d9,transparent 65%)}
+.sky::after{width:680px;height:680px;right:-200px;top:30vh;background:radial-gradient(circle,#a21caf55,transparent 65%)}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);background-size:22px 22px;
+  mask-image:linear-gradient(180deg,#000,transparent 70%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%)}
+
+/* ---------- nav */
+header{position:sticky;top:14px;z-index:50;margin-top:14px}
+.nav{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 16px;border:1px solid var(--line);border-radius:20px;
+  background:rgba(14,10,32,.72);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.06em;font-size:15px;margin-right:auto}
+.brand img{width:32px;height:32px;border-radius:9px}
+.links{display:flex;gap:2px}
+.links a{padding:8px 13px;border-radius:12px;color:var(--soft);font-size:14px;font-weight:500;transition:.2s}
+.links a:hover{background:rgba(255,255,255,.07);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 24px;border-radius:999px;font-weight:600;font-size:15px;
+  transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap}
+.btn svg{width:18px;height:18px}
+.btn-main{background:linear-gradient(180deg,#a77bff,#7a4ee6);color:#fff;box-shadow:0 10px 34px -10px #8b5cf6cc,inset 0 1px 0 #ffffff44}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 16px 44px -10px #8b5cf6,inset 0 1px 0 #ffffff55}
+.btn-ghost{background:rgba(255,255,255,.06);border:1px solid var(--line2)}
+.btn-ghost:hover{background:rgba(255,255,255,.12)}
+.btn-sm{padding:9px 18px;font-size:14px}
+.menu-btn{display:none;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.06)}
+
+/* ---------- hero */
+.hero{padding:88px 0 40px;text-align:center;position:relative}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 8px;border-radius:999px;border:1px solid var(--line2);
+  background:rgba(255,255,255,.05);font-size:13px;color:var(--soft)}
+.pill b{background:var(--acc);color:#fff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+.live{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px #3ddc8433}
+h1{font-size:clamp(44px,8vw,92px);line-height:1.02;font-weight:700;letter-spacing:-.035em;margin:26px auto 22px;max-width:900px}
+h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(16px,2vw,19px);color:var(--soft);max-width:680px;margin:0 auto}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:34px 0 22px}
+.meta{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;color:var(--mute);font-size:14px}
+.meta span{display:inline-flex;align-items:center;gap:8px}
+.meta svg{width:16px;height:16px;color:var(--acc2)}
+.ghost-float{position:absolute;width:74px;opacity:.9;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 12px 24px #8b5cf688)}
+.ghost-float.a{left:4%;top:120px}.ghost-float.b{right:6%;top:300px;width:52px;animation-delay:-3s;opacity:.6}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-16px) rotate(4deg)}}
+
+/* fenêtre de l'appli */
+.shot{margin:56px auto 0;max-width:1060px;position:relative}
+.shot::before{content:"";position:absolute;inset:8% 6% -6%;background:radial-gradient(closest-side,#8b5cf699,transparent);filter:blur(40px);z-index:-1}
+.shot img{border-radius:18px;border:1px solid var(--line2);box-shadow:0 40px 100px -30px #000}
+.tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.tab{padding:8px 16px;border-radius:999px;border:1px solid var(--line);color:var(--soft);font-size:14px;font-weight:500;transition:.2s}
+.tab[aria-selected=true]{background:var(--acc);border-color:transparent;color:#fff}
+.tab:hover:not([aria-selected=true]){background:rgba(255,255,255,.07)}
+
+/* ---------- sections */
+section{padding:110px 0 0}
+.eyebrow{color:var(--acc2);font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+h2{font-size:clamp(32px,4.6vw,52px);line-height:1.08;letter-spacing:-.03em;font-weight:700;margin:12px 0 14px}
+.sub{color:var(--soft);max-width:640px;font-size:17px}
+.head{margin-bottom:40px}
+.head.center{text-align:center}.head.center .sub{margin:0 auto}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--r);position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#ffffff40,transparent)}
+
+/* fonctionnalités */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat{padding:28px;transition:transform .25s,border-color .25s}
+.feat:hover{transform:translateY(-4px);border-color:var(--line2)}
+.ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#8b5cf62e;border:1px solid #b892ff44;color:var(--acc2);margin-bottom:18px}
+.ico svg{width:22px;height:22px}
+.feat h3{font-size:19px;margin-bottom:6px}
+.feat p{color:var(--mute);font-size:15px}
+
+/* démo couleurs */
+.demo{display:grid;grid-template-columns:1.55fr 1fr;gap:18px}
+.compare{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;user-select:none;touch-action:none;cursor:ew-resize;border:1px solid var(--line2)}
+.compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.compare .after{clip-path:inset(0 0 0 var(--pos,50%))}
+.split{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;background:#fff;transform:translateX(-1px);box-shadow:0 0 18px #0008}
+.knob{position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff;color:#4c1d95;
+  display:grid;place-items:center;box-shadow:0 6px 20px #0007}
+.knob svg{width:20px;height:20px}
+.tag{position:absolute;top:14px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.06em;backdrop-filter:blur(8px)}
+.tag.l{left:14px;background:#0009}.tag.r{right:14px;background:var(--acc)}
+.panel{padding:24px;display:flex;flex-direction:column;gap:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.04);font-size:14px;font-weight:500;color:var(--soft);transition:.2s}
+.chip:hover{background:rgba(255,255,255,.1)}
+.chip[aria-pressed=true]{background:linear-gradient(180deg,#a77bff,#7a4ee6);border-color:transparent;color:#fff}
+.slider{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+.slider label{font-weight:500;font-size:15px}
+.slider output{color:var(--acc3);font-weight:700;font-size:14px}
+input[type=range]{grid-column:1/-1;-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;
+  background:linear-gradient(90deg,#8a5cf6 0,#c4a2ff var(--p,50%),#2f2766 var(--p,50%));outline-offset:6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:18px;border-radius:99px;background:#ece6ff;box-shadow:0 2px 8px #0008;cursor:grab}
+input[type=range]::-moz-range-thumb{width:26px;height:18px;border:0;border-radius:99px;background:#ece6ff;box-shadow:0 2px 8px #0008;cursor:grab}
+.note{color:var(--mute);font-size:13px}
+
+/* stretch */
+.split2{display:grid;grid-template-columns:1fr 1.25fr;gap:44px;align-items:center}
+.screen{aspect-ratio:16/9;border-radius:18px;overflow:hidden;position:relative;border:1px solid var(--line2);background:#000}
+.screen img{position:absolute;top:0;height:100%;max-width:none;object-fit:cover;transition:width .5s cubic-bezier(.2,.8,.2,1),left .5s cubic-bezier(.2,.8,.2,1)}
+.res-label{position:absolute;left:14px;bottom:14px;background:#000a;backdrop-filter:blur(8px);padding:6px 12px;border-radius:10px;font-size:13px;font-weight:600}
+ul.ticks{list-style:none;display:grid;gap:12px;margin-top:22px}
+ul.ticks li{display:flex;gap:12px;color:var(--soft)}
+ul.ticks svg{flex:none;width:22px;height:22px;color:var(--ok);margin-top:1px}
+
+/* crosshair */
+.xh{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+.xh .screen canvas{position:absolute;inset:0;width:100%;height:100%}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:30px;height:30px;border-radius:50%;border:2px solid transparent;box-shadow:inset 0 0 0 2px #0006;transition:transform .15s}
+.sw[aria-pressed=true]{border-color:#fff;transform:scale(1.12)}
+.toggle{display:flex;align-items:center;justify-content:space-between;font-weight:500}
+.switch{width:52px;height:30px;border-radius:99px;background:#2f2766;position:relative;transition:.25s}
+.switch::after{content:"";position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:#ece6ff;transition:.25s}
+.switch[aria-checked=true]{background:linear-gradient(90deg,#9a6bff,#7a4ee6)}
+.switch[aria-checked=true]::after{left:26px}
+
+/* HUDs */
+.huds{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.hud{padding:22px;min-height:230px;display:flex;flex-direction:column;gap:14px}
+.hud h3{font-size:17px}.hud p{color:var(--mute);font-size:14px}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:#0007;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px;color:var(--mute)}
+.stat b{display:block;color:#fff;font-size:17px}
+.music{display:flex;gap:12px;align-items:center;background:#0007;border:1px solid var(--line);border-radius:16px;padding:12px}
+.cover{width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,#f472b6,#8b5cf6 60%,#1e1b4b);flex:none}
+.lyr{font-size:14px;color:var(--mute);line-height:1.5;height:42px;overflow:hidden}
+.lyr span{display:block;height:21px;line-height:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:transform .5s,color .3s}
+.lyr .on{color:#fff;font-weight:600}
+.bar{height:4px;border-radius:9px;background:#ffffff22;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:40%;background:var(--acc2);animation:prog 12s linear infinite}
+@keyframes prog{from{width:5%}to{width:95%}}
+.keys{display:grid;grid-template-columns:repeat(3,48px);gap:6px;justify-content:start}
+.key{height:44px;border-radius:10px;background:#0007;border:1px solid var(--line2);display:grid;place-items:center;font-weight:700;font-size:14px;transition:.12s}
+.key.down{background:var(--acc);border-color:var(--acc2);transform:translateY(1px)}
+.key[data-k=w]{grid-area:1/2}.key[data-k=a]{grid-area:2/1}.key[data-k=s]{grid-area:2/2}.key[data-k=d]{grid-area:2/3}
+.key.wide{grid-area:3/1/4/4}
+
+/* free */
+.free{padding:56px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+.free::before{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,#8b5cf677,transparent 65%)}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative}
+.num{background:#0006;border:1px solid var(--line);border-radius:18px;padding:22px}
+.num b{font-size:34px;display:block;letter-spacing:-.02em}
+.num span{color:var(--mute);font-size:14px}
+
+/* install */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+.step{padding:28px}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(180deg,#a77bff,#7a4ee6);font-weight:700;margin-bottom:16px}
+.step h3{font-size:18px;margin-bottom:6px}.step p{color:var(--mute);font-size:15px}
+.warn{margin-top:16px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;color:var(--soft);font-size:15px}
+.warn svg{flex:none;width:22px;height:22px;color:#ffc857;margin-top:2px}
+
+/* FAQ */
+.faq{max-width:820px;margin:0 auto;display:grid;gap:10px}
+details{padding:0 22px}
+summary{list-style:none;cursor:pointer;padding:20px 0;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";flex:none;width:12px;height:12px;border-right:2px solid var(--acc2);border-bottom:2px solid var(--acc2);transform:rotate(45deg) translateY(-4px);transition:.25s}
+details[open] summary::after{transform:rotate(225deg) translateY(-2px)}
+details p{color:var(--soft);padding:0 0 20px;font-size:15px}
+
+/* fin */
+.final{margin:110px 0 0;padding:70px 30px;text-align:center}
+.final img{width:96px;margin:0 auto 20px;animation:float 6s ease-in-out infinite;filter:drop-shadow(0 14px 30px #8b5cf699)}
+footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:28px}
+.foot a:hover{color:#fff}
+.foot nav{display:flex;gap:20px;flex-wrap:wrap}
+
+/* apparition au défilement */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- responsive */
+@media (max-width:980px){
+  .grid,.huds,.steps{grid-template-columns:1fr 1fr}
+  .demo,.split2,.xh,.free{grid-template-columns:1fr}
+  .free{padding:36px}
+  .links{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;padding:10px;border:1px solid var(--line);border-radius:18px;background:rgba(14,10,32,.96)}
+  .links.open{display:flex}
+  .menu-btn{display:grid;place-items:center}
+  .ghost-float{display:none}
+}
+@media (max-width:640px){
+  .grid,.huds,.steps,.nums{grid-template-columns:1fr}
+  .nav .btn{display:none}
+  section{padding-top:80px}
+  .hero{padding-top:56px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="sky"><div class="dots"></div></div>
+
+<!-- Icônes -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></symbol>
+  <symbol id="i-win" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10.5 3.5 8 4.5 9 8 12 8zM12 8s1.5-4.5 4-3.5S15 8 12 8z"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.6-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.6 4.5L20 16M20 20v-4h-4"/></symbol>
+  <symbol id="i-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17" /><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></symbol>
+  <symbol id="i-stretch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M7 12h10M9 10l-2 2 2 2M15 10l2 2-2 2"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><path d="M12 2.5v5M12 16.5v5M2.5 12h5M16.5 12h5"/></symbol>
+  <symbol id="i-hud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5 13.8 10.2 20.5 12l-6.7 1.8L12 20.5l-1.8-6.7L3.5 12l6.7-1.8z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5" stroke-opacity=".35"/><path d="M7.5 12.5l3 3 6-6.5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 8 7.5 9.5 4.3-1.5 7.5-5 7.5-9.5V6z"/><path d="M12 8v5M12 16.5v.5" stroke-linecap="round"/></symbol>
+  <symbol id="i-lr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+</svg>
+
+<header class="wrap">
+  <div class="nav">
+    <a class="brand" href="#top"><img src="assets/img/logo.png" alt="">PHANTOM BOOST</a>
+    <nav class="links" id="links">
+      <a href="#demo">Demo</a><a href="#features">Features</a><a href="#stretch">Stretch</a>
+      <a href="#crosshair">Crosshair</a><a href="#huds">HUDs</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-main btn-sm dl" href="#"><svg><use href="#i-dl"/></svg>Download</a>
+    <button class="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="links"><svg width="22" height="22"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <!-- ======================== HERO -->
+  <div class="hero wrap">
+    <img class="ghost-float a" src="assets/img/logo.png" alt="">
+    <img class="ghost-float b" src="assets/img/logo.png" alt="">
+    <a class="pill" href="#install"><b class="ver">v1.0.1</b><span class="live"></span><span>Out now · free for everyone</span></a>
+    <h1>Your game,<br><span class="glow">but it looks better.</span></h1>
+    <p class="lead">Phantom Boost tunes the colors of your screen, stretches your resolution, draws a clean crosshair and adds smooth HUDs on top of your game. All in one light Windows app. 100% free.</p>
+    <div class="cta">
+      <a class="btn btn-main dl" href="#"><svg><use href="#i-win"/></svg>Download for Windows</a>
+      <a class="btn btn-ghost" href="#demo">Try it here first</a>
+    </div>
+    <div class="meta">
+      <span><svg><use href="#i-gift"/></svg>Free, no account</span>
+      <span><svg><use href="#i-sync"/></svg>Updates install by themselves</span>
+      <span><svg><use href="#i-win"/></svg>Windows 10 &amp; 11</span>
+    </div>
+    <div class="shot rv">
+      <img id="shot" src="assets/img/app-display.webp" width="1200" height="815" alt="Phantom Boost: Display Tuning page">
+      <div class="tabs" role="tablist" aria-label="App pages">
+        <button class="tab" role="tab" aria-selected="true" data-img="display">Display</button>
+        <button class="tab" role="tab" aria-selected="false" data-img="stretch">Stretch</button>
+        <button class="tab" role="tab" aria-selected="false" data-img="crosshair">Crosshair</button>
+        <button class="tab" role="tab" aria-selected="false" data-img="settings">Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== DEMO -->
+  <section id="demo"><div class="wrap">
+    <div class="head rv">
+      <div class="eyebrow">Live preview</div>
+      <h2>Drag it. Feel the difference.</h2>
+      <p class="sub">Move the line to compare, pick a preset or play with the sliders. In the app, the same settings apply to your whole screen, in every game.</p>
+    </div>
+    <div class="demo rv">
+      <div class="compare" id="cmp" style="--pos:50%">
+        <img src="assets/img/game.webp" alt="Game screenshot before tuning" draggable="false">
+        <img class="after" id="after" src="assets/img/game.webp" alt="Same screenshot after tuning" draggable="false">
+        <span class="tag l">BEFORE</span><span class="tag r">AFTER</span>
+        <div class="split"><div class="knob"><svg><use href="#i-lr"/></svg></div></div>
+      </div>
+      <div class="card panel">
+        <div class="chips" id="presets">
+          <button class="chip" aria-pressed="false" data-p="100,100,100,0">Stock</button>
+          <button class="chip" aria-pressed="true" data-p="140,108,102,0">Vivid Pop</button>
+          <button class="chip" aria-pressed="false" data-p="118,104,104,-12">Golden Hour</button>
+          <button class="chip" aria-pressed="false" data-p="170,115,100,0">Ultra Vivid</button>
+          <button class="chip" aria-pressed="false" data-p="110,118,96,8">Night Clear</button>
+        </div>
+        <div class="slider"><label for="s-sat">Saturation</label><output id="o-sat"></output><input id="s-sat" type="range" min="0" max="200" value="140"></div>
+        <div class="slider"><label for="s-con">Contrast</label><output id="o-con"></output><input id="s-con" type="range" min="50" max="150" value="108"></div>
+        <div class="slider"><label for="s-bri">Brightness</label><output id="o-bri"></output><input id="s-bri" type="range" min="50" max="150" value="102"></div>
+        <div class="slider"><label for="s-hue">Hue</label><output id="o-hue"></output><input id="s-hue" type="range" min="-30" max="30" value="0"></div>
+        <p class="note">This web preview is an approximation. The app also has vibrance, gamma, RGB, a tone curve and settings for each screen.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ======================== FEATURES -->
+  <section id="features"><div class="wrap">
+    <div class="head center rv">
+      <div class="eyebrow">Everything in one app</div>
+      <h2>Small app. Big glow-up.</h2>
+      <p class="sub">No more five tools running at the same time. Phantom Boost does it all from one clean window.</p>
+    </div>
+    <div class="grid">
+      <article class="card feat rv"><div class="ico"><svg><use href="#i-color"/></svg></div><h3>Display Tuning</h3><p>Saturation, vibrance, hue, gamma and RGB, with presets, a tone curve and a live before / after.</p></article>
+      <article class="card feat rv"><div class="ico"><svg><use href="#i-stretch"/></svg></div><h3>Stretched Resolution</h3><p>1440×1080, 1280×960 and more. Auto stretch turns on with your game and goes back when you alt-tab.</p></article>
+      <article class="card feat rv"><div class="ico"><svg><use href="#i-cross"/></svg></div><h3>Crosshair &amp; Reticle</h3><p>10 designs, any color, size, gap and outline. Share yours with a short code.</p></article>
+      <article class="card feat rv"><div class="ico"><svg><use href="#i-hud"/></svg></div><h3>Smooth HUDs</h3><p>CPU, GPU, RAM, ping, FPS graph, keystrokes and Apple Music with synced lyrics. Drag and resize them.</p></article>
+      <article class="card feat rv"><div class="ico"><svg><use href="#i-bolt"/></svg></div><h3>One-click Optimizer</h3><p>Windows tweaks for games, with a full backup and one-click undo.</p></article>
+      <article class="card feat rv"><div class="ico"><svg><use href="#i-spark"/></svg></div><h3>Made to feel good</h3><p>Smooth animations, backgrounds, hotkeys, Discord status, several screens and auto-updates.</p></article>
+    </div>
+  </div></section>
+
+  <!-- ======================== STRETCH -->
+  <section id="stretch"><div class="wrap split2">
+    <div class="rv">
+      <div class="eyebrow">Stretched resolution</div>
+      <h2>Play stretched in one click.</h2>
+      <p class="sub">Pick a resolution, keep it if you like it. Phantom Boost goes back to normal by itself when you close it, even if something crashes.</p>
+      <ul class="ticks">
+        <li><svg><use href="#i-check"/></svg>Auto stretch for the games you choose</li>
+        <li><svg><use href="#i-check"/></svg>Normal resolution when you alt-tab out</li>
+        <li><svg><use href="#i-check"/></svg>Pick the screen if you have several</li>
+      </ul>
+    </div>
+    <div class="rv">
+      <div class="screen" id="strScreen"><img id="strImg" src="assets/img/game.webp" alt="Stretched preview"><span class="res-label" id="strLabel">1920 × 1080 · native</span></div>
+      <div class="chips" id="res" style="margin-top:14px;justify-content:center">
+        <button class="chip" aria-pressed="true" data-r="1920,1080">1920×1080</button>
+        <button class="chip" aria-pressed="false" data-r="1440,1080">1440×1080</button>
+        <button class="chip" aria-pressed="false" data-r="1280,960">1280×960</button>
+        <button class="chip" aria-pressed="false" data-r="1280,1024">1280×1024</button>
+        <button class="chip" aria-pressed="false" data-r="1024,768">1024×768</button>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ======================== CROSSHAIR -->
+  <section id="crosshair"><div class="wrap">
+    <div class="head rv">
+      <div class="eyebrow">Crosshair</div>
+      <h2>Build your crosshair right here.</h2>
+      <p class="sub">The app draws it on top of every game, on the screen you choose. Try a few styles below.</p>
+    </div>
+    <div class="xh rv">
+      <div class="screen"><img src="assets/img/game.webp" alt="" style="width:100%;left:0"><canvas id="xc" aria-label="Crosshair preview"></canvas></div>
+      <div class="card panel">
+        <div class="chips" id="xstyle">
+          <button class="chip" aria-pressed="true" data-s="cross">Cross</button>
+          <button class="chip" aria-pressed="false" data-s="dot">Dot</button>
+          <button class="chip" aria-pressed="false" data-s="crossdot">Cross + dot</button>
+          <button class="chip" aria-pressed="false" data-s="circle">Circle</button>
+          <button class="chip" aria-pressed="false" data-s="t">T-shape</button>
+        </div>
+        <div class="swatches" id="xcol">
+          <button class="sw" aria-label="Green" aria-pressed="true" data-c="#00ff88" style="background:#00ff88"></button>
+          <button class="sw" aria-label="Cyan" aria-pressed="false" data-c="#38e1ff" style="background:#38e1ff"></button>
+          <button class="sw" aria-label="Violet" aria-pressed="false" data-c="#b892ff" style="background:#b892ff"></button>
+          <button class="sw" aria-label="Pink" aria-pressed="false" data-c="#ff5fd2" style="background:#ff5fd2"></button>
+          <button class="sw" aria-label="Yellow" aria-pressed="false" data-c="#ffe14d" style="background:#ffe14d"></button>
+          <button class="sw" aria-label="White" aria-pressed="false" data-c="#ffffff" style="background:#ffffff"></button>
+        </div>
+        <div class="slider"><label for="x-size">Size</label><output id="o-size"></output><input id="x-size" type="range" min="4" max="28" value="11"></div>
+        <div class="slider"><label for="x-gap">Gap</label><output id="o-gap"></output><input id="x-gap" type="range" min="0" max="14" value="4"></div>
+        <div class="slider"><label for="x-thick">Thickness</label><output id="o-thick"></output><input id="x-thick" type="range" min="1" max="6" value="2"></div>
+        <div class="toggle">Outline <button class="switch" id="x-out" role="switch" aria-checked="true" aria-label="Outline"></button></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ======================== HUDS -->
+  <section id="huds"><div class="wrap">
+    <div class="head center rv">
+      <div class="eyebrow">HUDs</div>
+      <h2>Everything you want to see, nothing in the way.</h2>
+      <p class="sub">Clean overlays that stay on top of your game. Clicks go through them, and you can place each one anywhere.</p>
+    </div>
+    <div class="huds">
+      <div class="card hud rv">
+        <h3>Performance</h3><p>Live CPU, GPU, RAM and ping, plus an FPS graph.</p>
+        <div class="stats"><div class="stat"><b id="h-cpu">23%</b>CPU</div><div class="stat"><b id="h-gpu">61%</b>GPU</div><div class="stat"><b id="h-ram">7.9 GB</b>RAM</div><div class="stat"><b id="h-ping">18 ms</b>Ping</div></div>
+      </div>
+      <div class="card hud rv">
+        <h3>Apple Music</h3><p>The song you're playing, with synced lyrics.</p>
+        <div class="music"><div class="cover"></div><div style="flex:1;min-width:0">
+          <div class="lyr" id="lyr"><span>Your song is playing</span><span class="on">The lyrics follow the voice</span><span>Line after line, in time</span><span>Right on top of your game</span></div>
+          <div class="bar"><i></i></div></div></div>
+      </div>
+      <div class="card hud rv">
+        <h3>Keystrokes</h3><p>Show your inputs live. Every key can be changed.</p>
+        <div class="keys" id="keys"><div class="key" data-k="w">W</div><div class="key" data-k="a">A</div><div class="key" data-k="s">S</div><div class="key" data-k="d">D</div><div class="key wide" data-k=" ">SPACE</div></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ======================== FREE -->
+  <section><div class="wrap">
+    <div class="card free rv">
+      <div>
+        <div class="eyebrow">Free. Really.</div>
+        <h2>No trial. No account.<br>No paywall.</h2>
+        <p class="sub">Phantom Boost is free for everyone. Download it, install it in a few seconds, and new versions install by themselves.</p>
+        <div class="cta" style="justify-content:flex-start;margin-bottom:0"><a class="btn btn-main dl" href="#"><svg><use href="#i-dl"/></svg>Get Phantom Boost</a></div>
+      </div>
+      <div class="nums">
+        <div class="num"><b id="n-dl">—</b><span>Downloads</span></div>
+        <div class="num"><b class="ver">v1.0.1</b><span>Latest version</span></div>
+        <div class="num"><b>0 €</b><span>Forever</span></div>
+        <div class="num"><b>~10 s</b><span>To install</span></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ======================== INSTALL -->
+  <section id="install"><div class="wrap">
+    <div class="head center rv"><div class="eyebrow">Install</div><h2>Ready in three steps.</h2></div>
+    <div class="steps">
+      <div class="card step rv"><h3>Download</h3><p>Get <b>PhantomBoost-Setup.exe</b>. It's always the latest version.</p></div>
+      <div class="card step rv"><h3>Install</h3><p>Open it. It installs in a few seconds, with a Start menu and desktop shortcut. No admin rights needed.</p></div>
+      <div class="card step rv"><h3>Play</h3><p>Pick a preset, set your crosshair, launch your game. Updates come by themselves.</p></div>
+    </div>
+    <div class="card warn rv"><svg><use href="#i-shield"/></svg><div>If Windows shows <b>"Windows protected your PC"</b>, click <b>More info</b>, then <b>Run anyway</b>. This shows up because the installer isn't code-signed yet, which is common for free apps.</div></div>
+  </div></section>
+
+  <!-- ======================== FAQ -->
+  <section id="faq"><div class="wrap">
+    <div class="head center rv"><div class="eyebrow">FAQ</div><h2>Questions? Answers.</h2></div>
+    <div class="faq">
+      <details class="card rv"><summary>Is it really free?</summary><p>Yes. Phantom Boost is free, with no trial, no account and no paid version.</p></details>
+      <details class="card rv"><summary>Does it touch my game files?</summary><p>No. Phantom Boost doesn't modify or inject anything into your games. Colors use Windows display settings, the crosshair and HUDs are separate windows on top of the game, and stretch uses the normal Windows resolution change. Check the rules of the games you play if you're unsure about overlays.</p></details>
+      <details class="card rv"><summary>How do updates work?</summary><p>Phantom Boost checks for a new version when it starts and every few hours. It downloads it in the background, checks the file, and installs it the next time it starts, in a few seconds. Your settings stay as they are. You can turn this off in Settings.</p></details>
+      <details class="card rv"><summary>Which Windows versions work?</summary><p>Windows 10 and Windows 11, 64-bit.</p></details>
+      <details class="card rv"><summary>My screen didn't go back to normal. What do I do?</summary><p>Turn tuning off in the app, or press its hotkey. Closing Phantom Boost also puts your colors and resolution back. Stretch is undone by itself even if the app crashes.</p></details>
+      <details class="card rv"><summary>How do I uninstall it?</summary><p>Windows Settings → Apps → Phantom Boost → Uninstall. Your screen goes back to normal and "Start with Windows" is removed.</p></details>
+    </div>
+  </div></section>
+
+  <div class="wrap"><div class="card final rv">
+    <img src="assets/img/logo.png" alt="">
+    <h2>Give your screen a boost.</h2>
+    <p class="sub" style="margin:0 auto 28px">Free, light, and it updates by itself.</p>
+    <a class="btn btn-main dl" href="#"><svg><use href="#i-win"/></svg>Download for Windows</a>
+  </div></div>
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>© <span id="yr">2026</span> Phantom Boost · made with 💜 by wu</span>
+    <nav><a href="https://github.com/qqnr/phantom-boost/releases" rel="noopener">All versions</a><a href="https://github.com/qqnr" rel="noopener">GitHub</a><span>Discord @qqhw</span></nav>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const REPO = "qqnr/phantom-boost";
+  const DL = `https://github.com/${REPO}/releases/latest/download/PhantomBoost-Setup.exe`;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  $$(".dl").forEach(a => a.href = DL);
+  $("#yr").textContent = new Date().getFullYear();
+
+  // menu mobile
+  const mb = $(".menu-btn"), links = $("#links");
+  mb.addEventListener("click", () => { const o = links.classList.toggle("open"); mb.setAttribute("aria-expanded", o); });
+  $$("#links a").forEach(a => a.addEventListener("click", () => { links.classList.remove("open"); mb.setAttribute("aria-expanded", false); }));
+
+  // version + téléchargements en direct depuis GitHub
+  fetch(`https://api.github.com/repos/${REPO}/releases?per_page=100`).then(r => r.ok ? r.json() : Promise.reject())
+    .then(rel => {
+      const pub = rel.filter(r => !r.draft && !r.prerelease);
+      if (pub[0]) $$(".ver").forEach(e => e.textContent = pub[0].tag_name);
+      const n = rel.flatMap(r => r.assets).filter(a => /\.exe$/i.test(a.name)).reduce((s, a) => s + a.download_count, 0);
+      countUp($("#n-dl"), n);
+    }).catch(() => { $("#n-dl").textContent = "Free"; });
+  function countUp(el, n) {
+    const t0 = performance.now(), d = 1200;
+    const step = t => { const k = Math.min(1, (t - t0) / d); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))).toLocaleString("en"); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  // onglets de captures
+  $$(".tab").forEach(b => b.addEventListener("click", () => {
+    $$(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
+    const img = $("#shot"); img.style.opacity = .4;
+    img.onload = () => img.style.opacity = 1; img.style.transition = "opacity .25s";
+    img.src = `assets/img/app-${b.dataset.img}.webp`; img.alt = `Phantom Boost: ${b.textContent} page`;
+  }));
+
+  // apparition au défilement
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 });
+  $$(".rv").forEach(e => io.observe(e));
+
+  // ---------- démo couleurs
+  const range = el => { const p = (el.value - el.min) / (el.max - el.min) * 100; el.style.setProperty("--p", p + "%"); };
+  const S = { sat: $("#s-sat"), con: $("#s-con"), bri: $("#s-bri"), hue: $("#s-hue") };
+  function paint() {
+    const v = k => +S[k].value;
+    $("#after").style.filter = `saturate(${v("sat")}%) contrast(${v("con")}%) brightness(${v("bri")}%) hue-rotate(${v("hue")}deg)`;
+    $("#o-sat").textContent = v("sat") + "%"; $("#o-con").textContent = v("con") + "%";
+    $("#o-bri").textContent = v("bri") + "%"; $("#o-hue").textContent = v("hue") + "°";
+    Object.values(S).forEach(range);
+  }
+  Object.values(S).forEach(el => el.addEventListener("input", () => { $$("#presets .chip").forEach(c => c.setAttribute("aria-pressed", false)); paint(); }));
+  $$("#presets .chip").forEach(c => c.addEventListener("click", () => {
+    $$("#presets .chip").forEach(x => x.setAttribute("aria-pressed", x === c));
+    const [s, co, b, h] = c.dataset.p.split(",").map(Number);
+    S.sat.value = s; S.con.value = co; S.bri.value = b; S.hue.value = h; paint();
+  }));
+  paint();
+  const cmp = $("#cmp");
+  const move = x => { const r = cmp.getBoundingClientRect(); cmp.style.setProperty("--pos", Math.max(0, Math.min(100, (x - r.left) / r.width * 100)) + "%"); };
+  cmp.addEventListener("pointerdown", e => { cmp.setPointerCapture(e.pointerId); move(e.clientX); });
+  cmp.addEventListener("pointermove", e => { if (cmp.hasPointerCapture(e.pointerId)) move(e.clientX); });
+  cmp.tabIndex = 0; cmp.setAttribute("role", "slider"); cmp.setAttribute("aria-label", "Before / after");
+  cmp.addEventListener("keydown", e => {
+    const cur = parseFloat(cmp.style.getPropertyValue("--pos")) || 50, d = e.key === "ArrowLeft" ? -5 : e.key === "ArrowRight" ? 5 : 0;
+    if (d) { e.preventDefault(); cmp.style.setProperty("--pos", Math.max(0, Math.min(100, cur + d)) + "%"); }
+  });
+
+  // ---------- stretch : la partie centrale de l'image est étirée sur un écran 16:9
+  function stretch(w, h) {
+    const k = (16 / 9) / (w / h), img = $("#strImg");
+    img.style.width = (k * 100) + "%"; img.style.left = (-(k - 1) * 50) + "%";
+    $("#strLabel").textContent = `${w} × ${h}` + (k === 1 ? " · native" : " · stretched");
+  }
+  $$("#res .chip").forEach(c => c.addEventListener("click", () => {
+    $$("#res .chip").forEach(x => x.setAttribute("aria-pressed", x === c));
+    const [w, h] = c.dataset.r.split(",").map(Number); stretch(w, h);
+  }));
+  stretch(1920, 1080);
+
+  // ---------- crosshair
+  const cv = $("#xc"), ctx = cv.getContext("2d");
+  const X = { style: "cross", color: "#00ff88", size: $("#x-size"), gap: $("#x-gap"), thick: $("#x-thick"), outline: true };
+  function drawX() {
+    const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    cv.width = r.width * dpr; cv.height = r.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, r.width, r.height);
+    const cx = Math.round(r.width / 2), cy = Math.round(r.height / 2), sz = +X.size.value, gp = +X.gap.value, th = +X.thick.value;
+    // chaque forme se dessine deux fois : contour noir un peu plus large, puis la couleur
+    const shapes = [];
+    const line = (x1, y1, x2, y2) => shapes.push((c, e) => { c.lineWidth = th + e; c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke(); });
+    const dot = rad => shapes.push((c, e) => { c.beginPath(); c.arc(cx, cy, rad + e / 2, 0, Math.PI * 2); c.fill(); });
+    const ring = rad => shapes.push((c, e) => { c.lineWidth = th + e; c.beginPath(); c.arc(cx, cy, rad, 0, Math.PI * 2); c.stroke(); });
+    if (X.style === "cross" || X.style === "crossdot" || X.style === "t") {
+      if (X.style !== "t") line(cx, cy - gp, cx, cy - gp - sz);
+      line(cx, cy + gp, cx, cy + gp + sz); line(cx - gp, cy, cx - gp - sz, cy); line(cx + gp, cy, cx + gp + sz, cy);
+    }
+    if (X.style === "dot") dot(Math.max(2, th + sz / 6));
+    if (X.style === "crossdot") dot(Math.max(1.5, th * .9));
+    if (X.style === "circle") { ring(sz + gp); dot(Math.max(1.2, th * .7)); }
+    ctx.lineCap = "butt";
+    if (X.outline) { ctx.strokeStyle = ctx.fillStyle = "rgba(0,0,0,.85)"; shapes.forEach(f => f(ctx, 2)); }
+    ctx.strokeStyle = ctx.fillStyle = X.color; shapes.forEach(f => f(ctx, 0));
+    $("#o-size").textContent = sz; $("#o-gap").textContent = gp; $("#o-thick").textContent = th;
+    [X.size, X.gap, X.thick].forEach(range);
+  }
+  [X.size, X.gap, X.thick].forEach(el => el.addEventListener("input", drawX));
+  $$("#xstyle .chip").forEach(c => c.addEventListener("click", () => { $$("#xstyle .chip").forEach(x => x.setAttribute("aria-pressed", x === c)); X.style = c.dataset.s; drawX(); }));
+  $$("#xcol .sw").forEach(c => c.addEventListener("click", () => { $$("#xcol .sw").forEach(x => x.setAttribute("aria-pressed", x === c)); X.color = c.dataset.c; drawX(); }));
+  $("#x-out").addEventListener("click", e => { X.outline = !X.outline; e.currentTarget.setAttribute("aria-checked", X.outline); drawX(); });
+  new ResizeObserver(drawX).observe(cv);
+
+  // ---------- HUDs vivants
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  setInterval(() => {
+    $("#h-cpu").textContent = Math.round(rnd(16, 38)) + "%"; $("#h-gpu").textContent = Math.round(rnd(52, 78)) + "%";
+    $("#h-ram").textContent = rnd(7.6, 8.3).toFixed(1) + " GB"; $("#h-ping").textContent = Math.round(rnd(14, 26)) + " ms";
+  }, 1400);
+  const ly = $$("#lyr span"); let li = 1;
+  setInterval(() => { li = (li + 1) % ly.length; ly.forEach((s, i) => { s.classList.toggle("on", i === li); s.style.transform = `translateY(${-(Math.max(0, li - 1)) * 21}px)`; }); }, 2200);
+  const seq = ["w", "w", "a", "w", "d", " ", "s", "w", "d", "w"]; let ki = 0;
+  setInterval(() => { const k = $(`#keys [data-k="${seq[ki++ % seq.length]}"]`); k.classList.add("down"); setTimeout(() => k.classList.remove("down"), 260); }, 520);
+  addEventListener("keydown", e => { const k = $(`#keys [data-k="${e.key.toLowerCase()}"]`); if (k && !/input|textarea/i.test(document.activeElement.tagName)) k.classList.add("down"); });
+  addEventListener("keyup", e => { const k = $(`#keys [data-k="${e.key.toLowerCase()}"]`); if (k) k.classList.remove("down"); });
+})();
+</script>
+</body>
+</html>
