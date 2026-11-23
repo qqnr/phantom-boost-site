@@ -80,10 +80,64 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 .shot{margin:56px auto 0;max-width:1060px;position:relative}
 .shot::before{content:"";position:absolute;inset:8% 6% -6%;background:radial-gradient(closest-side,#8b5cf699,transparent);filter:blur(40px);z-index:-1}
 .shot img{border-radius:18px;border:1px solid var(--line2);box-shadow:0 40px 100px -30px #000}
-.tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-.tab{padding:8px 16px;border-radius:999px;border:1px solid var(--line);color:var(--soft);font-size:14px;font-weight:500;transition:.2s}
-.tab[aria-selected=true]{background:var(--acc);border-color:transparent;color:#fff}
-.tab:hover:not([aria-selected=true]){background:rgba(255,255,255,.07)}
+
+/* fenêtre interactive : 1200 x 815 px, mise à l'échelle */
+.app{position:relative;width:100%;aspect-ratio:1200/815;border-radius:18px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 40px 100px -30px #000;text-align:left;
+  user-select:none;-webkit-user-select:none}
+.app-in{position:absolute;left:0;top:0;width:1200px;height:815px;transform-origin:0 0;transform:scale(var(--s,1));font-size:14px;line-height:1.4}
+.app-bg{position:absolute;inset:0;width:1200px;height:815px;max-width:none;transition:opacity .18s}
+.app-in>*,.app-in #pgDisplay>*{position:absolute}
+.app-hint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;color:var(--mute);font-size:14px}
+.app-hint svg{width:16px;height:16px;color:var(--acc2)}
+.a-pill{height:26px;min-width:50px;padding:0 14px;border-radius:13px;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;
+  background:linear-gradient(180deg,#a07aff,#7f52ee);box-shadow:inset 0 1px 0 #ffffff40;transition:.2s}
+.a-pill.off{background:rgba(255,255,255,.1);color:#d8ccff;box-shadow:none}
+.a-sub{height:26px;line-height:26px;color:#ddd6f3;font-size:14px;white-space:nowrap}
+.a-tun{font-size:17px;font-weight:700;white-space:nowrap}
+.a-where{font-size:13px;color:#a69fc8}
+.a-toggle{width:82px;height:46px;border-radius:23px;background:#2f2766;transition:background .25s}
+.a-toggle::after{content:"";position:absolute;top:5px;left:5px;width:36px;height:36px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0006;transition:left .25s cubic-bezier(.3,1.4,.5,1)}
+.a-toggle.on{background:linear-gradient(90deg,#9a6bff,#7a4ee6);box-shadow:inset 0 0 0 1px #bea0ff46}
+.a-toggle.on::after{left:41px}
+.a-pick{width:150px;height:42px;border-radius:21px;background:linear-gradient(180deg,#a07affc8,#7f52eec8);border:1px solid #cdb4ff96;opacity:0}
+.a-pick:hover{opacity:.25}
+.a-menu{left:813px;top:163px;width:250px;padding:6px;border-radius:16px;background:linear-gradient(180deg,#281f54fa,#161130fc);border:1px solid #ffffff28;z-index:5;
+  box-shadow:0 18px 40px -10px #000}
+.a-menu button{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:11px;font-weight:600;font-size:14px}
+.a-menu button:hover{background:#ffffff14}
+.a-menu button[aria-current=true]{background:#8b5cf646}
+.a-seg{height:40px;border-radius:20px;background:#08061478;border:1px solid #ffffff18;display:flex;padding:3px}
+.a-seg button{flex:1;border-radius:16px;font-size:14px;font-weight:500;color:#ddd6f3;transition:background .2s,color .2s}
+.a-seg button[aria-pressed=true]{background:#ffffff2c;box-shadow:inset 0 0 0 1px #ffffff1e;color:#fff}
+.a-row{left:279px;width:326px;height:55px}
+.a-row .lb{position:absolute;left:2px;top:2px;font-size:15px;font-weight:600}
+.a-row .vl{position:absolute;right:2px;top:2px;font-size:15px;font-weight:700;color:#c9a6ff}
+.a-sl{position:absolute;left:0;top:23px;width:326px;height:32px;cursor:pointer;touch-action:none}
+.a-sl .tr{position:absolute;left:2px;right:2px;top:13px;height:8px;border-radius:4px;background:#ffffff1e}
+.a-sl .fl{position:absolute;left:2px;top:13px;height:8px;border-radius:4px;background:linear-gradient(90deg,#8a5cf6,#c4a2ff)}
+.a-sl .kb{position:absolute;top:5px;width:36px;height:24px;margin-left:-18px;border-radius:12px;background:#ece6ff;box-shadow:0 2px 0 #00000046;transition:width .12s,margin .12s,background .12s}
+.a-sl:hover .kb,.a-sl.drag .kb{width:38px;margin-left:-19px;background:#fff}
+.a-pv{width:498px;height:275px;border-radius:14px;overflow:hidden;cursor:ew-resize;touch-action:none;background:#000}
+.a-pv canvas{position:absolute;inset:0;width:100%;height:100%}
+.a-tag{position:absolute;top:13px;height:26px;padding:0 11px;border-radius:13px;display:grid;place-items:center;font-size:13px;font-weight:600;color:#fff}
+.a-tag.l{left:12px;background:#000000a0}.a-tag.r{right:12px;background:#8b5cf6dd}
+.a-split{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;margin-left:-1px;background:#fff}
+.a-knob{position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px;border-radius:50%;background:#fff;color:#5b3fd0;display:grid;place-items:center}
+.a-knob svg{width:16px;height:16px}
+.a-pv.curve .a-split,.a-pv.curve .a-tag{display:none}
+.a-card{top:680px;width:117px;height:100px;border-radius:14px;background:#00000046;border:2px solid #ffffff14;padding:2px 2px 7px;display:flex;flex-direction:column;gap:5px;
+  transition:border-color .2s,background .2s}
+.a-card:hover{border-color:#ffffff3c}
+.a-card[aria-pressed=true]{border-color:#b892ff;background:#8b5cf624}
+.a-card canvas{width:109px;height:62px;border-radius:12px}
+.a-card span{font-size:14px;text-align:center;color:#f5f2ff}
+.a-hot{z-index:2;border-radius:12px}
+.a-hot:hover{background:#ffffff0c}
+.a-nav{left:12px;width:215px;height:35px;border-radius:14px;z-index:2}
+.a-nav:hover{background:#ffffff0c}
+
+
+
 
 /* ---------- sections */
 section{padding:110px 0 0}
@@ -279,13 +333,37 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <span><svg><use href="#i-win"/></svg>Windows 10 &amp; 11</span>
     </div>
     <div class="shot rv">
-      <img id="shot" src="assets/img/app-display.webp" width="1200" height="815" alt="Phantom Boost: Display Tuning page">
-      <div class="tabs" role="tablist" aria-label="App pages">
-        <button class="tab" role="tab" aria-selected="true" data-img="display">Display</button>
-        <button class="tab" role="tab" aria-selected="false" data-img="stretch">Stretch</button>
-        <button class="tab" role="tab" aria-selected="false" data-img="crosshair">Crosshair</button>
-        <button class="tab" role="tab" aria-selected="false" data-img="settings">Settings</button>
+      <div class="app" id="app" aria-label="Interactive Phantom Boost window">
+        <div class="app-in" id="appIn">
+          <img class="app-bg" id="appBg" src="assets/img/app/display-base.webp" width="1200" height="815" alt="Phantom Boost window" draggable="false">
+          <div id="pgDisplay">
+            <span class="a-pill" id="aBadge" style="left:283px;top:148px">ON</span>
+            <span class="a-sub" id="aSub" style="left:345px;top:148px">Vivid Pop on Display 1</span>
+            <button class="a-pick" id="aPick" style="left:913px;top:115px" aria-haspopup="true"></button>
+            <div class="a-menu" id="aMenu" hidden></div>
+            <button class="a-toggle on" id="aToggle" style="left:1077px;top:113px" role="switch" aria-checked="true" aria-label="Tuning on or off"></button>
+            <div class="a-seg" id="aTabs" style="left:450px;top:228px;width:155px" data-items="Tone,Color" data-cur="1"></div>
+            <div id="aRows"></div>
+            <div class="a-seg" style="left:760px;top:226px;width:104px" data-items="Rob Run" data-cur="0"></div>
+            <div class="a-seg" id="aMode" style="left:997px;top:226px;width:168px" data-items="Demo,Curve" data-cur="0"></div>
+            <div class="a-pv" id="aPv" style="left:667px;top:278px">
+              <canvas id="pvBefore"></canvas><canvas id="pvAfter"></canvas><canvas id="pvCurve" hidden></canvas>
+              <span class="a-tag l">BEFORE</span><span class="a-tag r">AFTER</span>
+              <div class="a-split"><div class="a-knob"><svg><use href="#i-lr"/></svg></div></div>
+            </div>
+            <div id="aCards"></div>
+            <button class="a-hot" data-go="presets" style="left:1052px;top:632px;width:111px;height:36px" aria-label="All presets"></button>
+            <button class="a-hot" id="aReset" style="left:279px;top:730px;width:326px;height:48px;border-radius:24px" aria-label="Reset to neutral"></button>
+          </div>
+          <span class="a-pill" id="aOnb" style="left:162px;top:713px">ON</span>
+          <span class="a-tun" id="aTun" style="left:29px;top:740px">Vivid Pop</span>
+          <span class="a-where" id="aWhere" style="left:29px;top:769px">Display 1</span>
+          <div id="aNav"></div>
+          <button class="a-hot" data-go="account" style="left:987px;top:14px;width:97px;height:36px" aria-label="Profile"></button>
+          <button class="a-hot" data-go="display" style="left:12px;top:700px;width:215px;height:100px" aria-label="Open display tuning"></button>
+        </div>
       </div>
+      <p class="app-hint"><svg><use href="#i-spark"/></svg>This is the real interface. Click the menu, move the sliders, pick a preset.</p>
     </div>
   </div>
 
@@ -504,13 +582,223 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     requestAnimationFrame(step);
   }
 
-  // onglets de captures
-  $$(".tab").forEach(b => b.addEventListener("click", () => {
-    $$(".tab").forEach(x => x.setAttribute("aria-selected", x === b));
-    const img = $("#shot"); img.style.opacity = .4;
-    img.onload = () => img.style.opacity = 1; img.style.transition = "opacity .25s";
-    img.src = `assets/img/app-${b.dataset.img}.webp`; img.alt = `Phantom Boost: ${b.textContent} page`;
-  }));
+
+  // ================= fenêtre interactive (mêmes calculs que l'appli)
+  (function appMock() {
+    const app = $("#app"), inn = $("#appIn");
+    const fit = () => inn.style.setProperty("--s", app.clientWidth / 1200);
+    new ResizeObserver(fit).observe(app); fit();
+
+    const LUMA = [0.3086, 0.6094, 0.0820];
+    const DEF = { hue: 0, sat: 100, vib: 100, gamma: 1, bright: 0, contrast: 100, r: 100, g: 100, b: 100 };
+    const RANGES = { hue: [-180, 180], sat: [0, 300], vib: [0, 300], gamma: [.5, 2.5], bright: [-30, 30], contrast: [50, 150], r: [50, 150], g: [50, 150], b: [50, 150] };
+    const PRESETS = [
+      ["Stock", {}], ["Vivid Pop", { sat: 140, vib: 120 }],
+      ["Golden Hour", { sat: 120, g: 95, b: 80, gamma: 1.1 }], ["Ultra Vivid", { hue: 2, sat: 190, vib: 170 }],
+    ].map(([n, v]) => [n, Object.assign({}, DEF, v)]);
+    const ROWS = {
+      color: [["hue", "Hue", v => Math.round(v) + "°"], ["sat", "Saturation", v => Math.round(v) + "%"], ["vib", "Vibrance", v => Math.round(v) + "%"],
+              ["r", "Red", v => Math.round(v) + "%"], ["g", "Green", v => Math.round(v) + "%"], ["b", "Blue", v => Math.round(v) + "%"]],
+      tone: [["gamma", "Gamma", v => v.toFixed(2)], ["bright", "Brightness", v => String(Math.round(v))], ["contrast", "Contrast", v => Math.round(v) + "%"]],
+    };
+    const st = { p: Object.assign({}, PRESETS[1][1]), on: true, tab: "color", where: "Display 1", pos: .5, mode: "demo" };
+
+    function matrix(p) {
+      const s = p.sat / 100 * (1 + (p.vib - 100) / 300);
+      const S = [0, 1, 2].map(j => [0, 1, 2].map(i => (1 - s) * LUMA[i] + (i === j ? s : 0)));
+      const t = p.hue * Math.PI / 180, c = Math.cos(t), n = Math.sin(t);
+      const H = [[.213 + c * .787 - n * .213, .715 - c * .715 - n * .715, .072 - c * .072 + n * .928],
+                 [.213 - c * .213 + n * .143, .715 + c * .285 + n * .140, .072 - c * .072 - n * .283],
+                 [.213 - c * .213 - n * .787, .715 - c * .715 + n * .715, .072 + c * .928 + n * .072]];
+      const A = [0, 1, 2].map(j => [0, 1, 2].map(i => H[j][0] * S[0][i] + H[j][1] * S[1][i] + H[j][2] * S[2][i]));
+      const k = p.contrast / 100, b = p.bright / 100, gain = [p.r / 100, p.g / 100, p.b / 100];
+      return [A.map((row, j) => row.map(x => gain[j] * k * x)), gain.map(g => g * (0.5 - 0.5 * k + b))];
+    }
+    const lutCache = {};
+    function lut(gamma) {
+      if (lutCache[gamma]) return lutCache[gamma];
+      const L = new Uint8ClampedArray(4096);
+      for (let i = 0; i < 4096; i++) L[i] = Math.round(255 * Math.pow(i / 4095, 1 / gamma));
+      return lutCache[gamma] = L;
+    }
+    function grade(src, dst, p) {
+      const [A, o] = matrix(p), L = lut(p.gamma), d = src.data, out = dst.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+        for (let j = 0; j < 3; j++) {
+          let v = A[j][0] * r + A[j][1] * g + A[j][2] * b + o[j];
+          out[i + j] = L[Math.round((v < 0 ? 0 : v > 1 ? 1 : v) * 4095)];
+        }
+        out[i + 3] = 255;
+      }
+    }
+    // image source recadrée en "cover"
+    function cover(img, cv, w, h, dpr) {
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      const c = cv.getContext("2d", { willReadFrequently: true }), k = Math.max(cv.width / img.width, cv.height / img.height);
+      const dw = img.width * k, dh = img.height * k;
+      c.drawImage(img, (cv.width - dw) / 2, (cv.height - dh) / 2, dw, dh);
+      return c;
+    }
+
+    const img = new Image();
+    img.src = "assets/img/rob_run.jpg";
+    let srcData = null, aftCtx = null, aftData = null;
+    img.decode().then(() => {
+      const dpr = Math.min(2, Math.max(1, (window.devicePixelRatio || 1) * (app.clientWidth / 1200)));
+      const bctx = cover(img, $("#pvBefore"), 498, 275, dpr);
+      srcData = bctx.getImageData(0, 0, $("#pvBefore").width, $("#pvBefore").height);
+      aftCtx = cover(img, $("#pvAfter"), 498, 275, dpr);
+      aftData = aftCtx.createImageData(srcData.width, srcData.height);
+      $$("#aCards canvas").forEach((cv, i) => {
+        const c = cover(img, cv, 109, 62, 2), d = c.getImageData(0, 0, cv.width, cv.height), o = c.createImageData(cv.width, cv.height);
+        grade(d, o, PRESETS[i][1]); c.putImageData(o, 0, 0);
+      });
+      render();
+    });
+
+    let raf = 0;
+    function render() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); }
+    function draw() {
+      const p = st.p, name = (PRESETS.find(([, v]) => Object.keys(DEF).every(k => Math.abs(v[k] - p[k]) < 1e-6)) || ["Custom"])[0];
+      if (srcData) {
+        if (st.on) { grade(srcData, aftData, p); aftCtx.putImageData(aftData, 0, 0); }
+        else aftCtx.putImageData(srcData, 0, 0);
+      }
+      $("#pvAfter").style.clipPath = `inset(0 0 0 ${st.pos * 100}%)`;
+      $("#aPv").style.setProperty("--pos", st.pos * 100 + "%");
+      $("#aBadge").textContent = $("#aOnb").textContent = st.on ? "ON" : "OFF";
+      $("#aBadge").classList.toggle("off", !st.on); $("#aOnb").classList.toggle("off", !st.on);
+      $("#aSub").textContent = st.on ? `${name} on ${st.where}` : "Off · original screen";
+      $("#aTun").textContent = st.on ? name : "Off";
+      $("#aWhere").textContent = st.where;
+      $("#aToggle").classList.toggle("on", st.on); $("#aToggle").setAttribute("aria-checked", st.on);
+      $$("#aCards .a-card").forEach((c, i) => c.setAttribute("aria-pressed", st.on && PRESETS[i][0] === name));
+      $$("#aRows .a-row").forEach(r => {
+        const k = r.dataset.k, [lo, hi] = RANGES[k], t = (p[k] - lo) / (hi - lo), x = 18 + t * (326 - 36);
+        r.querySelector(".fl").style.width = Math.max(8, x - 2) + "px";
+        r.querySelector(".kb").style.left = x + "px";
+        r.querySelector(".vl").textContent = r._fmt(p[k]);
+      });
+      if (st.mode === "curve") drawCurve();
+    }
+
+    // lignes de réglages
+    function buildRows() {
+      const box = $("#aRows"); box.innerHTML = "";
+      ROWS[st.tab].forEach(([k, label, fmt], i) => {
+        const r = document.createElement("div");
+        r.className = "a-row"; r.dataset.k = k; r._fmt = fmt; r.style.top = (307 + 57 * i) + "px"; r.style.position = "absolute";
+        r.innerHTML = `<span class="lb">${label}</span><span class="vl"></span><div class="a-sl" role="slider" tabindex="0" aria-label="${label}"><div class="tr"></div><div class="fl"></div><div class="kb"></div></div>`;
+        const sl = r.querySelector(".a-sl"), [lo, hi] = RANGES[k], step = k === "gamma" ? .01 : 1;
+        const set = v => { v = Math.min(hi, Math.max(lo, v)); st.p[k] = k === "gamma" ? Math.round(v * 100) / 100 : Math.round(v); if (!st.on) st.on = true; render(); };
+        const at = e => { const b = sl.getBoundingClientRect(), s = b.width / 326; set(lo + Math.min(1, Math.max(0, (e.clientX - b.left - 18 * s) / (b.width - 36 * s))) * (hi - lo)); };
+        sl.addEventListener("pointerdown", e => { sl.setPointerCapture(e.pointerId); sl.classList.add("drag"); at(e); });
+        sl.addEventListener("pointermove", e => { if (sl.hasPointerCapture(e.pointerId)) at(e); });
+        sl.addEventListener("pointerup", () => sl.classList.remove("drag"));
+        sl.addEventListener("dblclick", () => set(DEF[k]));
+        sl.addEventListener("keydown", e => {
+          const d = { ArrowLeft: -1, ArrowDown: -1, ArrowRight: 1, ArrowUp: 1 }[e.key];
+          if (d) { e.preventDefault(); set(st.p[k] + d * step * (e.shiftKey ? 10 : 1)); }
+        });
+        box.appendChild(r);
+      });
+      render();
+    }
+
+    // contrôles segmentés
+    $$("#app .a-seg").forEach(seg => {
+      seg.dataset.items.split(",").forEach((t, i) => {
+        const b = document.createElement("button");
+        b.textContent = t; b.setAttribute("aria-pressed", i === +seg.dataset.cur);
+        b.addEventListener("click", () => {
+          [...seg.children].forEach(x => x.setAttribute("aria-pressed", x === b));
+          if (seg.id === "aTabs") { st.tab = i ? "color" : "tone"; buildRows(); }
+          if (seg.id === "aMode") { st.mode = i ? "curve" : "demo"; $("#pvCurve").hidden = !i; $("#aPv").classList.toggle("curve", !!i); render(); }
+        });
+        seg.appendChild(b);
+      });
+    });
+
+    // cartes de presets
+    PRESETS.forEach(([name, v], i) => {
+      const c = document.createElement("button");
+      c.className = "a-card"; c.style.left = (665 + 127 * i) + "px"; c.style.position = "absolute";
+      c.innerHTML = `<canvas></canvas><span>${name}</span>`;
+      c.addEventListener("click", () => { st.p = Object.assign({}, v); st.on = true; render(); });
+      $("#aCards").appendChild(c);
+    });
+
+    // interrupteur, écran
+    $("#aToggle").addEventListener("click", () => { st.on = !st.on; render(); });
+    $("#aReset").addEventListener("click", e => { e.stopPropagation(); st.p = Object.assign({}, DEF); st.on = true; render(); });
+    const menu = $("#aMenu");
+    ["Display 1", "Display 2", "All displays"].forEach(t => {
+      const b = document.createElement("button"); b.textContent = t;
+      b.addEventListener("click", () => { st.where = t; menu.hidden = true; $$("button", menu).forEach(x => x.setAttribute("aria-current", x === b)); render(); });
+      menu.appendChild(b);
+    });
+    $$("button", menu)[0].setAttribute("aria-current", true);
+    $("#aPick").addEventListener("click", e => { e.stopPropagation(); menu.hidden = !menu.hidden; });
+    document.addEventListener("click", e => { if (!menu.contains(e.target)) menu.hidden = true; });
+
+    // avant / après
+    const pv = $("#aPv");
+    const mv = e => { if (st.mode !== "demo") return; const b = pv.getBoundingClientRect(); st.pos = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width)); render(); };
+    pv.addEventListener("pointerdown", e => { pv.setPointerCapture(e.pointerId); mv(e); });
+    pv.addEventListener("pointermove", e => { if (pv.hasPointerCapture(e.pointerId)) mv(e); });
+
+    // courbe de tons (Curve)
+    function drawCurve() {
+      const cv = $("#pvCurve"), dpr = 2; cv.width = 498 * dpr; cv.height = 275 * dpr;
+      const c = cv.getContext("2d"); c.scale(dpr, dpr);
+      c.fillStyle = "#120d2a"; c.fillRect(0, 0, 498, 275);
+      const x0 = 24, y0 = 16, w = 300, h = 243;
+      c.strokeStyle = "#ffffff14"; c.lineWidth = 1;
+      for (let i = 1; i < 4; i++) { c.beginPath(); c.moveTo(x0 + w * i / 4, y0); c.lineTo(x0 + w * i / 4, y0 + h); c.moveTo(x0, y0 + h * i / 4); c.lineTo(x0 + w, y0 + h * i / 4); c.stroke(); }
+      c.strokeStyle = "#ffffff26"; c.strokeRect(x0, y0, w, h);
+      c.setLineDash([4, 4]); c.beginPath(); c.moveTo(x0, y0 + h); c.lineTo(x0 + w, y0); c.stroke(); c.setLineDash([]);
+      const p = st.on ? st.p : DEF, k = p.contrast / 100, b = p.bright / 100;
+      [["#ff6b7a", p.r], ["#5fe08a", p.g], ["#5fa8ff", p.b]].forEach(([col, gain]) => {
+        c.strokeStyle = col; c.lineWidth = 2.2; c.beginPath();
+        for (let i = 0; i <= 64; i++) { const x = i / 64, y = Math.pow(Math.min(1, Math.max(0, gain / 100 * (k * x + 0.5 - 0.5 * k + b))), 1 / p.gamma);
+          i ? c.lineTo(x0 + x * w, y0 + h - y * h) : c.moveTo(x0 + x * w, y0 + h - y * h); }
+        c.stroke();
+      });
+      // bandes de couleurs avant / après
+      const sx = 350, sw = 124, bands = ["#e53935", "#fb8c00", "#fdd835", "#43a047", "#1e88e5", "#8e24aa", "#d81b60", "#8d6e63"];
+      c.font = "600 12px Poppins"; c.fillStyle = "#a69fc8"; c.fillText("BEFORE", sx, y0 + 10); c.fillText("AFTER", sx + 70, y0 + 10);
+      const [A, o] = matrix(p), L = lut(p.gamma);
+      bands.forEach((hex, i) => {
+        const r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, bb = parseInt(hex.slice(5, 7), 16) / 255;
+        const out = [0, 1, 2].map(j => L[Math.round(Math.min(1, Math.max(0, A[j][0] * r + A[j][1] * g + A[j][2] * bb + o[j])) * 4095)]);
+        const y = y0 + 22 + i * 28;
+        c.fillStyle = hex; c.beginPath(); c.roundRect(sx, y, 54, 22, 6); c.fill();
+        c.fillStyle = `rgb(${out.join(",")})`; c.beginPath(); c.roundRect(sx + 70, y, 54, 22, 6); c.fill();
+      });
+    }
+
+    // menu de gauche : chaque page de l'appli
+    const NAV = [["display", 109], ["stretch", 146], ["presets", 183], ["auto-tune", 220], ["crosshair", 257], ["reticle", 294], ["binds", 331],
+                 ["optimizer", 368], ["theme", 405], ["community", 442], ["account", 518], ["settings", 555], ["about", 592], ["legal", 629]];
+    const go = page => {
+      const bg = $("#appBg"), src = `assets/img/app/${page === "display" ? "display-base" : page}.webp`;
+      if (bg.getAttribute("src") === src) return;
+      bg.style.opacity = .55;
+      const pre = new Image(); pre.src = src;
+      pre.decode().catch(() => {}).then(() => { bg.src = src; bg.style.opacity = 1; $("#pgDisplay").hidden = page !== "display"; menu.hidden = true; });
+    };
+    NAV.forEach(([page, y]) => {
+      const b = document.createElement("button");
+      b.className = "a-nav"; b.style.top = y + "px"; b.style.position = "absolute"; b.setAttribute("aria-label", page.replace("-", " "));
+      b.addEventListener("click", () => go(page));
+      $("#aNav").appendChild(b);
+    });
+    $$("#app .a-hot[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+    // précharge les autres pages quand le navigateur est libre
+    buildRows();
+    setTimeout(() => NAV.forEach(([pg]) => { if (pg !== "display") new Image().src = `assets/img/app/${pg}.webp`; }), 1500);
+  })();
 
   // apparition au défilement
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 });
