@@ -138,7 +138,7 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 .a-pv{width:498px;height:275px;border-radius:14px;overflow:hidden;cursor:ew-resize;touch-action:none;background:#000}
 .a-pv canvas{position:absolute;inset:0;width:100%;height:100%}
 .a-tag{position:absolute;top:13px;height:26px;padding:0 11px;border-radius:13px;display:grid;place-items:center;font-size:13px;font-weight:600;color:#fff}
-.a-tag.l{left:12px;background:#000000a0}.a-tag.r{right:12px;background:#8b5cf6dd}
+.a-tag.l{left:12px;background:#000000a0}.a-tag.r{right:12px;background:#8b5cf6dd}.a-tag.r.off{background:#000000a0}
 .a-split{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;margin-left:-1px;background:#fff}
 .a-knob{position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px;border-radius:50%;background:#fff;color:#5b3fd0;display:grid;place-items:center}
 .a-knob svg{width:16px;height:16px}
@@ -282,7 +282,23 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
 .rv.in{opacity:1;translate:none}
 
 /* ---------- responsive */
+/* nouveautés */
+.seasons{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
+.season{padding:16px 16px 24px}
+.season .sshot{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1200/815;border:1px solid var(--line);background:#0b0718}
+.season .sshot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.season .sshot canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.season h3{margin:20px 8px 6px;font-size:22px;display:flex;align-items:center;gap:10px}
+.season p{margin:0 8px;color:var(--soft)}
+.season .stag{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px}
+.season.win{box-shadow:0 30px 80px -40px #6fb7ff88}.season.win .stag{background:#6fb7ff22;color:#a9d4ff;border:1px solid #a9d4ff44}
+.season.hal{box-shadow:0 30px 80px -40px #ff8a1f99}.season.hal .stag{background:#ff8a1f22;color:#ffb873;border:1px solid #ffb87344}
+.news{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.new{padding:22px 24px;display:flex;gap:14px;align-items:flex-start}
+.new svg{width:24px;height:24px;flex:none;color:var(--acc2);margin-top:2px}
+.new h4{margin:0 0 4px;font-size:16px}.new p{margin:0;color:var(--soft);font-size:14.5px}
 @media (max-width:980px){
+  .seasons{grid-template-columns:1fr}.news{grid-template-columns:1fr 1fr}
   .grid,.huds,.steps{grid-template-columns:1fr 1fr}
   .demo,.split2,.xh,.free{grid-template-columns:1fr}
   .free{padding:36px}
@@ -292,7 +308,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   .ghost-float{display:none}
 }
 @media (max-width:640px){
-  .grid,.huds,.steps,.nums{grid-template-columns:1fr}
+  .grid,.huds,.steps,.nums,.news{grid-template-columns:1fr}
   .nav .btn{display:none}
   section{padding-top:80px}
   .hero{padding-top:56px}
@@ -325,7 +341,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   <div class="nav">
     <a class="brand" href="#top"><img src="assets/img/logo.png" alt="">PHANTOM BOOST</a>
     <nav class="links" id="links">
-      <a href="#demo">Demo</a><a href="#features">Features</a><a href="#stretch">Stretch</a>
+      <a href="#new">New</a><a href="#demo">Demo</a><a href="#features">Features</a><a href="#stretch">Stretch</a>
       <a href="#crosshair">Crosshair</a><a href="#huds">HUDs</a><a href="#faq">FAQ</a>
     </nav>
     <a class="btn btn-main btn-sm dl" href="#"><svg><use href="#i-dl"/></svg>Download</a>
@@ -338,7 +354,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   <div class="hero wrap">
     <img class="ghost-float a" src="assets/img/logo.png" alt="">
     <img class="ghost-float b" src="assets/img/logo.png" alt="">
-    <a class="pill" href="#install"><b class="ver">v1.0.1</b><span class="live"></span><span>Out now · free for everyone</span></a>
+    <a class="pill" href="#install"><b class="ver">v1.0.8</b><span class="live"></span><span>Out now · free for everyone</span></a>
     <h1>Your game,<br><span class="glow">but it looks better.</span></h1>
     <p class="lead">Phantom Boost tunes the colors of your screen, stretches your resolution, draws a clean crosshair and adds smooth HUDs on top of your game. All in one light Windows app. 100% free.</p>
     <div class="cta">
@@ -420,6 +436,31 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   </div></section>
 
   <!-- ======================== FEATURES -->
+  <section id="new"><div class="wrap">
+    <div class="head center rv">
+      <div class="eyebrow">New in v1.0.8</div>
+      <h2>Winter and Halloween are here.</h2>
+      <p class="sub">Two seasonal themes with their own logo, plus a whole batch of upgrades. Already have Phantom Boost? It updates by itself.</p>
+    </div>
+    <div class="seasons">
+      <article class="card season win rv"><div class="sshot"><img src="assets/img/theme-winter.webp" alt="Phantom Boost with the Winter theme" loading="lazy" width="1200" height="815"><canvas class="fx" data-fx="snow"></canvas></div>
+        <h3>Winter <span class="stag">Theme</span></h3>
+        <p>Falling snow with real six-branch crystals, gusts of wind, a northern-lights sky, snowy pines, and a Santa hat on the ghost.</p></article>
+      <article class="card season hal rv"><div class="sshot"><img src="assets/img/theme-halloween.webp" alt="Phantom Boost with the Halloween theme" loading="lazy" width="1200" height="815"><canvas class="fx" data-fx="spooky"></canvas></div>
+        <h3>Halloween <span class="stag">Theme</span></h3>
+        <p>An orange night with a full moon, glowing pumpkins and rising embers. A spider drops in now and then, bats fly by, and the ghost gets a witch hat.</p></article>
+    </div>
+    <div class="news">
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Stays out of your way</h4><p>The X button tucks the app next to the clock. Your tuning, crosshair and HUDs stay on.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>New HUD stats</h4><p>Your game's FPS and your download speed join CPU, GPU, RAM, ping and the clock.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Better Discord status</h4><p>Show the game you're boosting, the song you're playing, and a clickable logo.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Music HUD upgrades</h4><p>See the next lyric line coming, and a progress bar in your cover's color.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Smoother everywhere</h4><p>A new opening animation, smooth fades, and no more lag on the blur and dim sliders.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Reset in one click</h4><p>Presets now have a "Reset to neutral" button for colors and gamma.</p></div></div>
+    </div>
+  </div></section>
+
+  <!-- ======================== FEATURES -->
   <section id="features"><div class="wrap">
     <div class="head center rv">
       <div class="eyebrow">Everything in one app</div>
@@ -430,9 +471,9 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-color"/></svg></div><h3>Display Tuning</h3><p>Saturation, vibrance, hue, gamma and RGB, with presets, a tone curve and a live before / after.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-stretch"/></svg></div><h3>Stretched Resolution</h3><p>1440×1080, 1280×960 and more. Auto stretch turns on with your game and goes back when you alt-tab.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-cross"/></svg></div><h3>Crosshair &amp; Reticle</h3><p>10 designs, any color, size, gap and outline. Share yours with a short code.</p></article>
-      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-hud"/></svg></div><h3>Smooth HUDs</h3><p>CPU, GPU, RAM, ping, FPS graph, keystrokes and Apple Music with synced lyrics. Drag and resize them.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-hud"/></svg></div><h3>Smooth HUDs</h3><p>FPS, CPU, GPU, RAM, ping, download speed, keystrokes and your music with synced lyrics. Drag and resize them.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-bolt"/></svg></div><h3>One-click Optimizer</h3><p>Windows tweaks for games, with a full backup and one-click undo.</p></article>
-      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-spark"/></svg></div><h3>Made to feel good</h3><p>Smooth animations, backgrounds, hotkeys, Discord status, several screens and auto-updates.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-spark"/></svg></div><h3>Made to feel good</h3><p>Smooth animations, Winter and Halloween themes, hotkeys, Discord status, several screens and auto-updates.</p></article>
     </div>
   </div></section>
 
@@ -502,11 +543,11 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     </div>
     <div class="huds">
       <div class="card hud rv">
-        <h3>Performance</h3><p>Live CPU, GPU, RAM and ping, plus an FPS graph.</p>
+        <h3>Performance</h3><p>Live FPS, CPU, GPU, RAM, ping and download speed, plus an FPS graph.</p>
         <div class="stats"><div class="stat"><b id="h-cpu">23%</b>CPU</div><div class="stat"><b id="h-gpu">61%</b>GPU</div><div class="stat"><b id="h-ram">7.9 GB</b>RAM</div><div class="stat"><b id="h-ping">18 ms</b>Ping</div></div>
       </div>
       <div class="card hud rv">
-        <h3>Apple Music</h3><p>The song you're playing, with synced lyrics.</p>
+        <h3>Now playing</h3><p>Spotify, Apple Music, Deezer, YouTube Music and more, with synced lyrics.</p>
         <div class="music"><div class="cover"></div><div style="flex:1;min-width:0">
           <div class="lyr" id="lyr"><span>Your song is playing</span><span class="on">The lyrics follow the voice</span><span>Line after line, in time</span><span>Right on top of your game</span></div>
           <div class="bar"><i></i></div></div></div>
@@ -529,7 +570,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       </div>
       <div class="nums">
         <div class="num"><b id="n-dl">—</b><span>Downloads</span></div>
-        <div class="num"><b class="ver">v1.0.1</b><span>Latest version</span></div>
+        <div class="num"><b class="ver">v1.0.8</b><span>Latest version</span></div>
         <div class="num"><b>0 €</b><span>Forever</span></div>
         <div class="num"><b>~10 s</b><span>To install</span></div>
       </div>
@@ -554,6 +595,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       <details class="card rv"><summary>Is it really free?</summary><p>Yes. Phantom Boost is free, with no trial, no account and no paid version.</p></details>
       <details class="card rv"><summary>Does it touch my game files?</summary><p>No. Phantom Boost doesn't modify or inject anything into your games. Colors use Windows display settings, the crosshair and HUDs are separate windows on top of the game, and stretch uses the normal Windows resolution change. Check the rules of the games you play if you're unsure about overlays.</p></details>
       <details class="card rv"><summary>How do updates work?</summary><p>Phantom Boost checks for a new version when it starts and every few hours. It downloads it in the background, checks the file, and installs it the next time it starts, in a few seconds. Your settings stay as they are. You can turn this off in Settings.</p></details>
+      <details class="card rv"><summary>Where did the app go when I closed it?</summary><p>The X button keeps Phantom Boost running next to the clock, so your tuning, crosshair and HUDs stay on. Click the ghost to open it again, or right-click it and choose Quit. You can change this in Settings.</p></details>
       <details class="card rv"><summary>Which Windows versions work?</summary><p>Windows 10 and Windows 11, 64-bit.</p></details>
       <details class="card rv"><summary>My screen didn't go back to normal. What do I do?</summary><p>Turn tuning off in the app, or press its hotkey. Closing Phantom Boost also puts your colors and resolution back. Stretch is undone by itself even if the app crashes.</p></details>
       <details class="card rv"><summary>How do I uninstall it?</summary><p>Windows Settings → Apps → Phantom Boost → Uninstall. Your screen goes back to normal and "Start with Windows" is removed.</p></details>
@@ -685,18 +727,18 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     function draw() {
       const p = st.p, name = (PRESETS.find(([, v]) => Object.keys(DEF).every(k => Math.abs(v[k] - p[k]) < 1e-6)) || ["Custom"])[0];
       if (srcData) {
-        if (st.on) { grade(srcData, aftData, p); aftCtx.putImageData(aftData, 0, 0); }
-        else aftCtx.putImageData(srcData, 0, 0);
+        grade(srcData, aftData, p); aftCtx.putImageData(aftData, 0, 0);  // comme l'appli : l'aperçu reste visible éteint
       }
       $("#pvAfter").style.clipPath = `inset(0 0 0 ${st.pos * 100}%)`;
       $("#aPv").style.setProperty("--pos", st.pos * 100 + "%");
       $("#aBadge").textContent = $("#aOnb").textContent = st.on ? "ON" : "OFF";
+      const tagR = $("#aPv .a-tag.r"); tagR.textContent = st.on ? "AFTER" : "AFTER · OFF"; tagR.classList.toggle("off", !st.on);
       $("#aBadge").classList.toggle("off", !st.on); $("#aOnb").classList.toggle("off", !st.on);
       $("#aSub").textContent = st.on ? `${name} on ${st.where}` : "Off · original screen";
       $("#aTun").textContent = st.on ? name : "Off";
       $("#aWhere").textContent = st.where;
       $("#aToggle").classList.toggle("on", st.on); $("#aToggle").setAttribute("aria-checked", st.on);
-      $$("#aCards .a-card").forEach((c, i) => c.setAttribute("aria-pressed", st.on && PRESETS[i][0] === name));
+      $$("#aCards .a-card").forEach((c, i) => c.setAttribute("aria-pressed", PRESETS[i][0] === name));
       $$("#aRows .a-row").forEach(r => {
         const k = r.dataset.k, [lo, hi] = RANGES[k], t = (p[k] - lo) / (hi - lo), x = 18 + t * (326 - 36);
         r.querySelector(".fl").style.width = Math.max(8, x - 2) + "px";
@@ -714,7 +756,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
         r.className = "a-row"; r.dataset.k = k; r._fmt = fmt; r.style.top = (307 + 57 * i) + "px"; r.style.position = "absolute";
         r.innerHTML = `<span class="lb">${label}</span><span class="vl"></span><div class="a-sl" role="slider" tabindex="0" aria-label="${label}"><div class="tr"></div><div class="fl"></div><div class="kb"></div></div>`;
         const sl = r.querySelector(".a-sl"), [lo, hi] = RANGES[k], step = k === "gamma" ? .01 : 1;
-        const set = v => { v = Math.min(hi, Math.max(lo, v)); st.p[k] = k === "gamma" ? Math.round(v * 100) / 100 : Math.round(v); if (!st.on) st.on = true; render(); };
+        const set = v => { v = Math.min(hi, Math.max(lo, v)); st.p[k] = k === "gamma" ? Math.round(v * 100) / 100 : Math.round(v); render(); };
         const at = e => { const b = sl.getBoundingClientRect(), s = b.width / 326; set(lo + Math.min(1, Math.max(0, (e.clientX - b.left - 18 * s) / (b.width - 36 * s))) * (hi - lo)); };
         sl.addEventListener("pointerdown", e => { sl.setPointerCapture(e.pointerId); sl.classList.add("drag"); at(e); });
         sl.addEventListener("pointermove", e => { if (sl.hasPointerCapture(e.pointerId)) at(e); });
@@ -748,13 +790,13 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       const c = document.createElement("button");
       c.className = "a-card"; c.style.left = (665 + 127 * i) + "px"; c.style.position = "absolute";
       c.innerHTML = `<canvas></canvas><span>${name}</span>`;
-      c.addEventListener("click", () => { st.p = Object.assign({}, v); st.on = true; render(); });
+      c.addEventListener("click", () => { st.p = Object.assign({}, v); render(); });
       $("#aCards").appendChild(c);
     });
 
     // interrupteur, écran
     $("#aToggle").addEventListener("click", () => { st.on = !st.on; render(); });
-    $("#aReset").addEventListener("click", e => { e.stopPropagation(); st.p = Object.assign({}, DEF); st.on = true; render(); });
+    $("#aReset").addEventListener("click", e => { e.stopPropagation(); st.p = Object.assign({}, DEF); render(); });
     const menu = $("#aMenu");
     ["Display 1", "Display 2", "All displays"].forEach(t => {
       const b = document.createElement("button"); b.textContent = t;
@@ -781,7 +823,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       for (let i = 1; i < 4; i++) { c.beginPath(); c.moveTo(x0 + w * i / 4, y0); c.lineTo(x0 + w * i / 4, y0 + h); c.moveTo(x0, y0 + h * i / 4); c.lineTo(x0 + w, y0 + h * i / 4); c.stroke(); }
       c.strokeStyle = "#ffffff26"; c.strokeRect(x0, y0, w, h);
       c.setLineDash([4, 4]); c.beginPath(); c.moveTo(x0, y0 + h); c.lineTo(x0 + w, y0); c.stroke(); c.setLineDash([]);
-      const p = st.on ? st.p : DEF, k = p.contrast / 100, b = p.bright / 100;
+      const p = st.p, k = p.contrast / 100, b = p.bright / 100;
       [["#ff6b7a", p.r], ["#5fe08a", p.g], ["#5fa8ff", p.b]].forEach(([col, gain]) => {
         c.strokeStyle = col; c.lineWidth = 2.2; c.beginPath();
         for (let i = 0; i <= 64; i++) { const x = i / 64, y = Math.pow(Math.min(1, Math.max(0, gain / 100 * (k * x + 0.5 - 0.5 * k + b))), 1 / p.gamma);
@@ -959,6 +1001,112 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   addEventListener("keydown", e => { const k = $(`#keys [data-k="${e.key.toLowerCase()}"]`); if (k && !/input|textarea/i.test(document.activeElement.tagName)) k.classList.add("down"); });
   addEventListener("keyup", e => { const k = $(`#keys [data-k="${e.key.toLowerCase()}"]`); if (k) k.classList.remove("down"); });
 })();
+
+  // ---------- nouveautés : neige et araignée vivantes sur les captures des thèmes
+  (() => {
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelectorAll("canvas.fx").forEach(cv => {
+      const ctx = cv.getContext("2d"), mode = cv.dataset.fx;
+      let W = 0, H = 0, dpr = 1, items = [], run = false, last = 0, t = 0, spider = null, nextSp = 2.5, bat = null, nextBat = 6;
+      const R = Math.random;
+      function size() {
+        dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        items = Array.from({ length: mode === "snow" ? Math.round(W * H / 5200) : Math.round(W * H / 16000) }, () => make(false));
+      }
+      function make(edge) {
+        if (mode === "snow") {
+          const d = R() ** 1.6, cr = d > .62 && R() < .6;
+          return { x: R() * W, y: edge ? -10 : R() * H, d, cr, r: cr ? 3.4 + 2 * R() : .7 + 2 * d, vy: 12 + 36 * d, a: .3 + .6 * d,
+                   amp: 4 + 12 * R(), f: .25 + .5 * R(), ph: R() * 6.28, rot: R() * 60, sp: (R() - .5) * 80 };
+        }
+        return { x: R() * W, y: edge ? H + 6 : H * (.35 + .65 * R()), r: 1 + 1.6 * R(), vy: 8 + 14 * R(), amp: 6 + 12 * R(), f: .2 + .4 * R(), ph: R() * 6.28, l: R() * 6.28 };
+      }
+      function crystal(x, y, r, rot, a) {
+        ctx.save(); ctx.translate(x, y); ctx.rotate(rot * Math.PI / 180);
+        ctx.strokeStyle = `rgba(245,250,255,${a})`; ctx.lineWidth = Math.max(.8, r / 5); ctx.lineCap = "round"; ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          ctx.moveTo(0, 0); ctx.lineTo(0, -r);
+          for (const k of [.45, .72]) { const b = r * (k < .6 ? .32 : .22); ctx.moveTo(0, -r * k); ctx.lineTo(-b * .85, -r * k - b * .6); ctx.moveTo(0, -r * k); ctx.lineTo(b * .85, -r * k - b * .6); }
+          ctx.rotate(Math.PI / 3);
+        }
+        ctx.stroke(); ctx.restore();
+      }
+      function drawSpider(s) {
+        const sw = 5 * Math.sin(s.k * 1.7) * (s.ph === "hold" ? 1 : .35);
+        ctx.save(); ctx.translate(s.x, 0); ctx.rotate(-sw * Math.PI / 180);
+        ctx.strokeStyle = "rgba(255,240,220,.5)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, Math.max(0, s.y - 6)); ctx.stroke();
+        ctx.translate(0, s.y); const z = Math.max(.6, W / 900); ctx.scale(z, z);
+        ctx.strokeStyle = "#140a12"; ctx.lineWidth = 1.6; ctx.lineCap = "round";
+        const wig = s.k * (s.ph === "hold" ? 4 : 9);
+        [-1, 1].forEach(sd => [-50, -18, 14, 44].forEach((b, i) => {
+          const a = (b + 6 * Math.sin(wig + i * 1.3 + (sd > 0 ? 0 : 1.6))) * Math.PI / 180;
+          ctx.beginPath(); ctx.moveTo(sd * 3, i * 1.6 - 1);
+          ctx.quadraticCurveTo(sd * (8 + 8 * Math.cos(a)), -6 + 9 * Math.sin(a), sd * (15 + 9 * Math.cos(a)), 3 + 13 * Math.sin(a)); ctx.stroke();
+        }));
+        ctx.fillStyle = "#1a0c16"; ctx.beginPath(); ctx.ellipse(0, 6, 7.5, 9, 0, 0, 6.28); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, -5, 4.6, 4.2, 0, 0, 6.28); ctx.fill();
+        ctx.fillStyle = "rgba(255,138,31,.8)"; ctx.beginPath(); ctx.ellipse(0, 7, 2.2, 3, 0, 0, 6.28); ctx.fill();
+        ctx.fillStyle = "#ff7828"; [-1.7, 1.7].forEach(ex => { ctx.beginPath(); ctx.arc(ex, -3.5, 1.1, 0, 6.28); ctx.fill(); });
+        ctx.restore();
+      }
+      function drawBat(b) {
+        const f = Math.sin(b.t * 16), z = b.s * Math.max(.7, W / 900);
+        ctx.save(); ctx.translate(b.x, b.y); ctx.scale(b.ltr ? z : -z, z); ctx.fillStyle = "rgba(22,8,16,.92)";
+        [-1, 1].forEach(sd => { ctx.beginPath(); ctx.moveTo(sd * 2, -1); ctx.quadraticCurveTo(sd * 12, -6 * f - 2, sd * 22, -10 * f);
+          ctx.quadraticCurveTo(sd * 17, 2 - 4 * f, sd * 14, 4 - 3 * f); ctx.quadraticCurveTo(sd * 11, 2, sd * 8, 5 - 2 * f);
+          ctx.quadraticCurveTo(sd * 5, 2, sd * 2, 4); ctx.closePath(); ctx.fill(); });
+        ctx.beginPath(); ctx.ellipse(0, 1, 3.6, 5, 0, 0, 6.28); ctx.fill(); ctx.beginPath(); ctx.ellipse(0, -4, 2.8, 2.6, 0, 0, 6.28); ctx.fill();
+        ctx.restore();
+      }
+      function frame(now) {
+        if (!run) return;
+        const dt = last ? Math.min(.05, (now - last) / 1000) : 0; last = now; t += dt;
+        ctx.clearRect(0, 0, W, H);
+        if (mode === "snow") {
+          const gust = Math.max(0, Math.sin(t * .2 + 1.3)) ** 3, wind = 8 * Math.sin(t * .4) + 30 * gust;
+          for (const f of items) {
+            f.y += f.vy * dt; f.x += wind * dt * (.4 + f.d); f.rot += f.sp * dt;
+            if (f.y > H + 10 || f.x > W + 30) { Object.assign(f, make(true)); if (f.x > W) f.x = -10; }
+            const x = f.x + f.amp * Math.sin(f.ph + t * f.f * 1.57);
+            if (f.cr) { crystal(x, f.y, f.r, f.rot, f.a); continue; }
+            ctx.fillStyle = `rgba(240,246,255,${f.a})`; ctx.beginPath(); ctx.arc(x, f.y, f.r, 0, 6.28); ctx.fill();
+          }
+        } else {
+          for (const e of items) {
+            e.y -= e.vy * dt; e.l += dt * 3; if (e.y < H * .15) Object.assign(e, make(true));
+            const x = e.x + e.amp * Math.sin(e.ph + t * e.f * 2.1), fade = Math.min(1, Math.max(0, (e.y - H * .15) / (H * .35)));
+            const a = .8 * fade * (.65 + .35 * Math.sin(e.l)); if (a < .02) continue;
+            const g = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 3.2);
+            g.addColorStop(0, `rgba(255,214,140,${a})`); g.addColorStop(.3, `rgba(255,140,40,${a * .75})`); g.addColorStop(1, "rgba(255,100,20,0)");
+            ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, e.y, e.r * 3.2, 0, 6.28); ctx.fill();
+          }
+          nextSp -= dt; nextBat -= dt;
+          if (!spider && nextSp <= 0) spider = { x: W * (.3 + .6 * R()), y: -30, tg: H * (.25 + .3 * R()), ph: "down", s: 0, k: 0, hold: 2 + 2 * R() };
+          if (spider) {
+            const s = spider; s.s += dt; s.k += dt;
+            if (s.ph === "down") { const k = Math.min(1, s.s / 2.4); s.y = -30 + (s.tg + 30) * (1 - (1 - k) ** 3); if (k >= 1) { s.ph = "hold"; s.s = 0; } }
+            else if (s.ph === "hold") { s.y = s.tg + 6 * Math.sin(s.s * 5) * Math.exp(-s.s * 1.6); if (s.s >= s.hold) { s.ph = "up"; s.s = 0; s.from = s.y; } }
+            else { const k = Math.min(1, s.s / 1.9); s.y = s.from + (-40 - s.from) * k * k * (3 - 2 * k); if (k >= 1) { spider = null; nextSp = 6 + 8 * R(); } }
+            if (spider) drawSpider(s);
+          }
+          if (!bat && nextBat <= 0) bat = { t: 0, dur: 3.4 + 1.6 * R(), ltr: R() < .5, y0: H * (.12 + .3 * R()), amp: 10 + 20 * R(), s: 1 + .4 * R() };
+          if (bat) {
+            const b = bat; b.t += dt; const k = b.t / b.dur;
+            if (k >= 1) { bat = null; nextBat = 7 + 9 * R(); }
+            else { const x = -40 + (W + 80) * k; b.x = b.ltr ? x : W - x; b.y = b.y0 + b.amp * Math.sin(k * 6.28 * 1.3) - 20 * Math.sin(k * 3.14); drawBat(b); }
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+      new ResizeObserver(size).observe(cv); size();
+      if (reduce) return;
+      new IntersectionObserver(es => es.forEach(e => {
+        const was = run; run = e.isIntersecting;
+        if (run && !was) { last = 0; requestAnimationFrame(frame); }
+      }), { threshold: .05 }).observe(cv);
+    });
+  })();
 </script>
 </body>
 </html>
