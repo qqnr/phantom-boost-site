@@ -135,13 +135,18 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 .a-sl .fl{position:absolute;left:2px;top:13px;height:8px;border-radius:4px;background:linear-gradient(90deg,#8a5cf6,#c4a2ff)}
 .a-sl .kb{position:absolute;top:5px;width:36px;height:24px;margin-left:-18px;border-radius:12px;background:#ece6ff;box-shadow:0 2px 0 #00000046;transition:width .12s,margin .12s,background .12s}
 .a-sl:hover .kb,.a-sl.drag .kb{width:38px;margin-left:-19px;background:#fff}
-.a-pv{width:498px;height:275px;border-radius:14px;overflow:hidden;cursor:ew-resize;touch-action:none;background:#000}
+.a-pv{width:498px;height:254px;border-radius:14px;overflow:hidden;cursor:ew-resize;touch-action:none;background:#000}
 .a-pv canvas{position:absolute;inset:0;width:100%;height:100%}
 .a-tag{position:absolute;top:13px;height:26px;padding:0 11px;border-radius:13px;display:grid;place-items:center;font-size:13px;font-weight:600;color:#fff}
 .a-tag.l{left:12px;background:#000000a0}.a-tag.r{right:12px;background:#8b5cf6dd}.a-tag.r.off{background:#000000a0}
 .a-split{position:absolute;top:0;bottom:0;left:var(--pos,50%);width:2px;margin-left:-1px;background:#fff}
 .a-knob{position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px;border-radius:50%;background:#fff;color:#5b3fd0;display:grid;place-items:center}
 .a-knob svg{width:16px;height:16px}
+.a-knob{transition:transform .14s ease-out,box-shadow .14s ease-out;box-shadow:0 2px 6px #0006}
+.a-pv:hover .a-knob,.a-pv.drag .a-knob{transform:scale(1.16);box-shadow:0 2px 8px #0007,0 0 0 6px #8b5cf640}
+.a-tag{transition:opacity .12s linear}
+#pvFade{opacity:0;pointer-events:none}
+#pvFade.go{transition:opacity .32s ease-out}
 .a-pv.curve .a-split,.a-pv.curve .a-tag{display:none}
 .a-card{top:680px;width:117px;height:100px;border-radius:14px;background:#00000046;border:2px solid #ffffff14;padding:2px 2px 7px;display:flex;flex-direction:column;gap:5px;
   transition:border-color .2s,background .2s}
@@ -151,7 +156,7 @@ h1 .glow{background:linear-gradient(100deg,#fff 10%,#d9c4ff 45%,#a77bff 90%);-we
 .a-card span{font-size:14px;text-align:center;color:#f5f2ff}
 .a-hot{z-index:2;border-radius:12px}
 .a-hot:hover{background:#ffffff0c}
-.a-nav{left:12px;width:215px;height:30px;border-radius:14px;z-index:2;border:1px solid transparent;transition:background .15s,border-color .15s}
+.a-nav{left:12px;width:216px;height:31px;border-radius:12px;z-index:2;border:1px solid transparent;transition:background .15s,border-color .15s}
 .a-nav:hover{background:#ffffff0a;border-color:#c8b4ff3c}
 
 
@@ -361,7 +366,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   <div class="hero wrap">
     <img class="ghost-float a" src="assets/img/logo.png" alt="">
     <img class="ghost-float b" src="assets/img/logo.png" alt="">
-    <a class="pill" href="#install"><b class="ver">v1.0.8</b><span class="live"></span><span>Out now · free for everyone</span></a>
+    <a class="pill" href="#install"><b class="ver">v1.0.17</b><span class="live"></span><span>Out now · free for everyone</span></a>
     <h1>Your game,<br><span class="glow">but it looks better.</span></h1>
     <p class="lead">Phantom Boost tunes the colors of your screen, stretches your resolution, draws a clean crosshair and adds smooth HUDs on top of your game. All in one light Windows app. 100% free.</p>
     <div class="cta">
@@ -388,10 +393,10 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
             <button class="a-toggle on" id="aToggle" style="left:1077px;top:113px" role="switch" aria-checked="true" aria-label="Tuning on or off"></button>
             <div class="a-seg" id="aTabs" style="left:450px;top:228px;width:155px" data-items="Tone,Color" data-cur="1"></div>
             <div id="aRows"></div>
-            <div class="a-seg" style="left:760px;top:226px;width:104px" data-items="Rob Run" data-cur="0"></div>
+            <div class="a-seg" id="aGame" style="left:903px;top:544px;width:262px" data-items="Rob Run,Fortnite,CS2" data-cur="0"></div>
             <div class="a-seg" id="aMode" style="left:997px;top:226px;width:168px" data-items="Demo,Curve" data-cur="0"></div>
             <div class="a-pv" id="aPv" style="left:667px;top:278px">
-              <canvas id="pvBefore"></canvas><canvas id="pvAfter"></canvas><canvas id="pvCurve" hidden></canvas>
+              <canvas id="pvBefore"></canvas><canvas id="pvAfter"></canvas><canvas id="pvFade"></canvas><canvas id="pvCurve" hidden></canvas>
               <span class="a-tag l">BEFORE</span><span class="a-tag r">AFTER</span>
               <div class="a-split"><div class="a-knob"><svg><use href="#i-lr"/></svg></div></div>
             </div>
@@ -446,25 +451,25 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
   <!-- ======================== FEATURES -->
   <section id="new"><div class="wrap">
     <div class="head center rv">
-      <div class="eyebrow">New in v1.0.8</div>
-      <h2>Winter and Halloween are here.</h2>
-      <p class="sub">Two seasonal themes with their own logo, plus a whole batch of upgrades. Already have Phantom Boost? It updates by itself.</p>
+      <div class="eyebrow">New in v1.0.17</div>
+      <h2>Premium, inside and out.</h2>
+      <p class="sub">Two hand-drawn seasonal themes, a premium HUD in your color, your own stretch resolutions and a lot more crosshairs. Already have Phantom Boost? It updates by itself.</p>
     </div>
     <div class="seasons">
       <article class="card season win rv"><div class="sshot"><img src="assets/img/theme-winter.webp" alt="Phantom Boost with the Winter theme" loading="lazy" width="1200" height="815"><canvas class="fx" data-fx="snow"></canvas></div>
         <h3>Winter <span class="stag">Theme</span></h3>
-        <p>Falling snow with real six-branch crystals, gusts of wind, a northern-lights sky, snowy pines, and a Santa hat on the ghost.</p></article>
+        <p>A starry night with soft northern lights, snowy mountains fading into the mist, a pine forest and falling snow. The ghost gets a Santa hat.</p></article>
       <article class="card season hal rv"><div class="sshot"><img src="assets/img/theme-halloween.webp" alt="Phantom Boost with the Halloween theme" loading="lazy" width="1200" height="815"><canvas class="fx" data-fx="spooky"></canvas></div>
         <h3>Halloween <span class="stag">Theme</span></h3>
-        <p>An orange night with a full moon, glowing pumpkins and rising embers. A spider drops in now and then, bats fly by, and the ghost gets a witch hat.</p></article>
+        <p>A purple-to-orange sky, a giant moon, a haunted manor with its lights on, dead trees and glowing pumpkins. A spider drops in now and then, and the ghost gets a witch hat.</p></article>
     </div>
     <div class="news">
-      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Stays out of your way</h4><p>The X button tucks the app next to the clock. Your tuning, crosshair and HUDs stay on.</p></div></div>
-      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>New HUD stats</h4><p>Your game's FPS and your download speed join CPU, GPU, RAM, ping and the clock.</p></div></div>
-      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Better Discord status</h4><p>Show the game you're boosting, the song you're playing, and a clickable logo.</p></div></div>
-      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Music HUD upgrades</h4><p>See the next lyric line coming, and a progress bar in your cover's color.</p></div></div>
-      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Smoother everywhere</h4><p>A new opening animation, smooth fades, and no more lag on the blur and dim sliders.</p></div></div>
-      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Reset in one click</h4><p>Presets now have a "Reset to neutral" button for colors and gamma.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Premium Profile HUD</h4><p>Your avatar in a colored ring, smooth gauges, mini FPS graphs, ping bars and the date. Numbers glide instead of jumping.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Your HUD color</h4><p>Pick one of 10 colors, or any color you want, for every HUD: profile, performance graph, music and keys.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Create a resolution</h4><p>Type any stretched size. Phantom Boost tells you right away if your screen takes it, or how to add it in your GPU panel.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>15 crosshairs</h4><p>Five new designs, plus rotation (turn a + into an X), square and diamond rings, and a T-style.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Smoother graph and lyrics</h4><p>A rock-steady FPS graph at 60 fps, and lyrics matched to the right version of your song, timing saved per track.</p></div></div>
+      <div class="card new rv"><svg><use href="#i-check"/></svg><div><h4>Stretch that just works</h4><p>Games in borderless mode resize with your screen, so nothing ends up off-screen anymore. Try the preview on Rob Run, Fortnite or CS2.</p></div></div>
     </div>
   </div></section>
 
@@ -478,7 +483,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     <div class="grid">
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-color"/></svg></div><h3>Display Tuning</h3><p>Saturation, vibrance, hue, gamma and RGB, with presets, a tone curve and a live before / after.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-stretch"/></svg></div><h3>Stretched Resolution</h3><p>1440×1080, 1280×960 and more. Auto stretch turns on with your game and goes back when you alt-tab.</p></article>
-      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-cross"/></svg></div><h3>Crosshair &amp; Reticle</h3><p>10 designs, any color, size, gap and outline. Share yours with a short code.</p></article>
+      <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-cross"/></svg></div><h3>Crosshair &amp; Reticle</h3><p>15 designs, any color, rotation, ring shapes, size, gap and outline. Share yours with a short code.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-hud"/></svg></div><h3>Smooth HUDs</h3><p>FPS, CPU, GPU, RAM, ping, download speed, keystrokes and your music with synced lyrics. Drag and resize them.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-bolt"/></svg></div><h3>One-click Optimizer</h3><p>Windows tweaks for games, with a full backup and one-click undo.</p></article>
       <article class="card feat rv" data-tilt="5"><div class="glare"></div><div class="ico"><svg><use href="#i-spark"/></svg></div><h3>Made to feel good</h3><p>Smooth animations, Winter and Halloween themes, hotkeys, Discord status, several screens and auto-updates.</p></article>
@@ -495,6 +500,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
         <li><svg><use href="#i-check"/></svg>Auto stretch for the games you choose</li>
         <li><svg><use href="#i-check"/></svg>Normal resolution when you alt-tab out</li>
         <li><svg><use href="#i-check"/></svg>Pick the screen if you have several</li>
+        <li><svg><use href="#i-check"/></svg>Create your own resolution, checked live</li>
       </ul>
     </div>
     <div class="rv">
@@ -525,6 +531,9 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
           <button class="chip" aria-pressed="false" data-s="crossdot">Cross + dot</button>
           <button class="chip" aria-pressed="false" data-s="circle">Circle</button>
           <button class="chip" aria-pressed="false" data-s="t">T-shape</button>
+          <button class="chip" aria-pressed="false" data-s="x">X cross</button>
+          <button class="chip" aria-pressed="false" data-s="diamond">Diamond</button>
+          <button class="chip" aria-pressed="false" data-s="square">Square</button>
         </div>
         <div class="swatches" id="xcol">
           <button class="sw" aria-label="Green" aria-pressed="true" data-c="#00ff88" style="background:#00ff88"></button>
@@ -578,7 +587,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       </div>
       <div class="nums">
         <div class="num"><b id="n-dl">—</b><span>Downloads</span></div>
-        <div class="num"><b class="ver">v1.0.8</b><span>Latest version</span></div>
+        <div class="num"><b class="ver">v1.0.17</b><span>Latest version</span></div>
         <div class="num"><b>0 €</b><span>Forever</span></div>
         <div class="num"><b>~10 s</b><span>To install</span></div>
       </div>
@@ -714,29 +723,46 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
       }
     }
     // image source recadrée en "cover"
-    function cover(img, cv, w, h, dpr) {
+    // fy : hauteur gardée quand l'image est recadrée (0 = haut, 1 = bas), comme dans l'appli
+    function cover(img, cv, w, h, dpr, fy = .5) {
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
       const c = cv.getContext("2d", { willReadFrequently: true }), k = Math.max(cv.width / img.width, cv.height / img.height);
       const dw = img.width * k, dh = img.height * k;
-      c.drawImage(img, (cv.width - dw) / 2, (cv.height - dh) / 2, dw, dh);
+      c.imageSmoothingQuality = "high";
+      c.drawImage(img, (cv.width - dw) / 2, (cv.height - dh) * fy, dw, dh);
       return c;
     }
 
-    const img = new Image();
-    img.src = "assets/img/rob_run.jpg";
-    let srcData = null, aftCtx = null, aftData = null;
-    img.decode().then(() => {
-      const dpr = Math.min(3, Math.max(1.5, (window.devicePixelRatio || 1) * (app.clientWidth / 1200)));
-      const bctx = cover(img, $("#pvBefore"), 498, 275, dpr);
-      srcData = bctx.getImageData(0, 0, $("#pvBefore").width, $("#pvBefore").height);
-      aftCtx = cover(img, $("#pvAfter"), 498, 275, dpr);
-      aftData = aftCtx.createImageData(srcData.width, srcData.height);
-      $$("#aCards canvas").forEach((cv, i) => {
-        const c = cover(img, cv, 109, 62, 3), d = c.getImageData(0, 0, cv.width, cv.height), o = c.createImageData(cv.width, cv.height);
-        grade(d, o, PRESETS[i][1]); c.putImageData(o, 0, 0);
+    // les trois jeux de l'aperçu (mêmes captures et même cadrage que dans l'appli)
+    const GAMES = [["assets/img/rob_run.jpg", .58], ["assets/img/fortnite.jpg", .03], ["assets/img/cs2.jpg", .5]];
+    const imgs = {};
+    const loadImg = src => imgs[src] || (imgs[src] = new Promise((ok, ko) => { const im = new Image(); im.onload = () => ok(im); im.onerror = ko; im.src = src; }));
+    let srcData = null, aftCtx = null, aftData = null, gameTok = 0;
+    function useGame(gi, fadeIn) {
+      const tok = ++gameTok, [src, fy] = GAMES[gi];
+      loadImg(src).then(img => {
+        if (tok !== gameTok) return;  // un autre jeu a été choisi entre-temps
+        const dpr = Math.min(3, Math.max(1.5, (window.devicePixelRatio || 1) * (app.clientWidth / 1200)));
+        if (fadeIn && srcData) {  // fondu : l'image actuelle (avant + après) reste par-dessus et s'efface
+          const f = $("#pvFade"), b = $("#pvBefore"), a = $("#pvAfter");
+          f.width = b.width; f.height = b.height;
+          const fc = f.getContext("2d"); fc.drawImage(b, 0, 0);
+          const x = Math.round(b.width * st.pos); fc.drawImage(a, x, 0, b.width - x, b.height, x, 0, b.width - x, b.height);
+          f.classList.remove("go"); f.style.opacity = 1; void f.offsetWidth; f.classList.add("go"); f.style.opacity = 0;
+        }
+        const bctx = cover(img, $("#pvBefore"), 498, 254, dpr, fy);
+        srcData = bctx.getImageData(0, 0, $("#pvBefore").width, $("#pvBefore").height);
+        aftCtx = cover(img, $("#pvAfter"), 498, 254, dpr, fy);
+        aftData = aftCtx.createImageData(srcData.width, srcData.height);
+        $$("#aCards canvas").forEach((cv, i) => {  // les miniatures des presets suivent le jeu choisi
+          const c = cover(img, cv, 109, 62, 3, fy), d = c.getImageData(0, 0, cv.width, cv.height), o = c.createImageData(cv.width, cv.height);
+          grade(d, o, PRESETS[i][1]); c.putImageData(o, 0, 0);
+        });
+        draw();
       });
-      render();
-    });
+    }
+    useGame(0, false);
+    GAMES.slice(1).forEach(([src]) => setTimeout(() => loadImg(src), 1500));  // préchargés : le changement est instantané
 
     let raf = 0;
     function render() { if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); }
@@ -746,6 +772,9 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
         grade(srcData, aftData, p); aftCtx.putImageData(aftData, 0, 0);  // comme l'appli : l'aperçu reste visible éteint
       }
       $("#pvAfter").style.clipPath = `inset(0 0 0 ${st.pos * 100}%)`;
+      const W = 498, tl = $("#aPv .a-tag.l"), tr = $("#aPv .a-tag.r"), x = st.pos * W;  // l'étiquette s'efface quand la ligne passe dessus
+      tl.style.opacity = Math.min(1, Math.max(0, (x - (12 + tl.offsetWidth) + 6) / 30));
+      tr.style.opacity = Math.min(1, Math.max(0, ((W - 12 - tr.offsetWidth) - x + 6) / 30));
       $("#aPv").style.setProperty("--pos", st.pos * 100 + "%");
       $("#aBadge").textContent = $("#aOnb").textContent = st.on ? "ON" : "OFF";
       const tagR = $("#aPv .a-tag.r"); tagR.textContent = st.on ? "AFTER" : "AFTER · OFF"; tagR.classList.toggle("off", !st.on);
@@ -795,6 +824,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
         b.addEventListener("click", () => {
           [...seg.children].forEach(x => x.setAttribute("aria-pressed", x === b));
           if (seg.id === "aTabs") { st.tab = i ? "color" : "tone"; buildRows(); }
+          if (seg.id === "aGame") useGame(i, true);
           if (seg.id === "aMode") { st.mode = i ? "curve" : "demo"; $("#pvCurve").hidden = !i; $("#aPv").classList.toggle("curve", !!i); render(); }
         });
         seg.appendChild(b);
@@ -826,15 +856,17 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     // avant / après
     const pv = $("#aPv");
     const mv = e => { if (st.mode !== "demo") return; const b = pv.getBoundingClientRect(); st.pos = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width)); render(); };
-    pv.addEventListener("pointerdown", e => { pv.setPointerCapture(e.pointerId); mv(e); });
+    pv.addEventListener("pointerdown", e => { pv.setPointerCapture(e.pointerId); pv.classList.add("drag"); mv(e); });
+    pv.addEventListener("pointerup", () => pv.classList.remove("drag"));
+    pv.addEventListener("pointercancel", () => pv.classList.remove("drag"));
     pv.addEventListener("pointermove", e => { if (pv.hasPointerCapture(e.pointerId)) mv(e); });
 
     // courbe de tons (Curve)
     function drawCurve() {
-      const cv = $("#pvCurve"), dpr = 3; cv.width = 498 * dpr; cv.height = 275 * dpr;
+      const cv = $("#pvCurve"), dpr = 3; cv.width = 498 * dpr; cv.height = 254 * dpr;
       const c = cv.getContext("2d"); c.scale(dpr, dpr);
-      c.fillStyle = "#120d2a"; c.fillRect(0, 0, 498, 275);
-      const x0 = 24, y0 = 16, w = 300, h = 243;
+      c.fillStyle = "#120d2a"; c.fillRect(0, 0, 498, 254);
+      const x0 = 24, y0 = 16, w = 300, h = 222;
       c.strokeStyle = "#ffffff14"; c.lineWidth = 1;
       for (let i = 1; i < 4; i++) { c.beginPath(); c.moveTo(x0 + w * i / 4, y0); c.lineTo(x0 + w * i / 4, y0 + h); c.moveTo(x0, y0 + h * i / 4); c.lineTo(x0 + w, y0 + h * i / 4); c.stroke(); }
       c.strokeStyle = "#ffffff26"; c.strokeRect(x0, y0, w, h);
@@ -861,8 +893,7 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
 
     // menu de gauche : chaque page de l'appli
     // positions mesurées sur les captures : une ligne toutes les 32 px, 30 px de haut (comme la sélection dans l'appli)
-    const NAV = [["display", 109], ["stretch", 141], ["presets", 173], ["auto-tune", 205], ["crosshair", 237], ["reticle", 269], ["binds", 301],
-                 ["optimizer", 333], ["theme", 365], ["community", 397], ["account", 468], ["settings", 500], ["about", 532], ["legal", 564]];
+    const NAV = [["display", 106], ["stretch", 138], ["presets", 170], ["auto-tune", 202], ["crosshair", 234], ["reticle", 266], ["binds", 298], ["optimizer", 330], ["theme", 362], ["community", 394], ["account", 463], ["settings", 495], ["about", 527], ["legal", 559]];
     let cur = "display", tok = 0;
     const go = page => {  // fondu enchaîné d'une page à l'autre
       if (page === cur) return;
@@ -993,6 +1024,20 @@ footer{padding:50px 0 40px;color:var(--mute);font-size:14px}
     if (X.style === "dot") dot(Math.max(2, th + sz / 6));
     if (X.style === "crossdot") dot(Math.max(1.5, th * .9));
     if (X.style === "circle") { ring(sz + gp); dot(Math.max(1.2, th * .7)); }
+    if (X.style === "x") {  // branches tournées de 45°
+      const k = Math.SQRT1_2;
+      [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([a, b]) => line(cx + a * gp * k, cy + b * gp * k, cx + a * (gp + sz) * k, cy + b * (gp + sz) * k));
+    }
+    if (X.style === "diamond" || X.style === "square") {
+      const R = sz + gp;
+      shapes.push((c, e) => {
+        c.lineWidth = th + e; c.lineJoin = "miter"; c.beginPath();
+        if (X.style === "square") c.rect(cx - R * .8, cy - R * .8, R * 1.6, R * 1.6);
+        else { c.moveTo(cx, cy - R); c.lineTo(cx + R, cy); c.lineTo(cx, cy + R); c.lineTo(cx - R, cy); c.closePath(); }
+        c.stroke();
+      });
+      dot(Math.max(1.2, th * .7));
+    }
     ctx.lineCap = "butt";
     if (X.outline) { ctx.strokeStyle = ctx.fillStyle = "rgba(0,0,0,.85)"; shapes.forEach(f => f(ctx, 2)); }
     ctx.strokeStyle = ctx.fillStyle = X.color; shapes.forEach(f => f(ctx, 0));
